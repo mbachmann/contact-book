@@ -1,0 +1,25 @@
+version: '2'
+
+
+networks:
+  proxy:
+    external: true
+
+services:
+
+  contact-book-app-h2:
+    image: uportal/contact-book:latest
+    labels:
+      - "traefik.backend=contact-book-h2"
+      - "traefik.frontend.rule=Host:contact-book-h2.united-portal.com"
+      - "traefik.docker.network=proxy"
+      - "traefik.port=8080"
+      - "traefik.enable=true"
+
+    restart: always
+    networks:
+      - proxy
+    environment:
+      APP_NAME: Todo Rest with Spring Boot and H2
+      ACTIVE_PROFILES: dev,h2
+      APP_URL: https://contact-book-h2.united-portal.com

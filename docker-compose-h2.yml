@@ -1,0 +1,14 @@
+
+version: '2'
+
+services:
+
+  contact-book-app-h2:
+    image: uportal/contact-book:latest
+
+    restart: always
+    environment:
+      APP_NAME: Contact Book App with H2
+      ACTIVE_PROFILES: dev,h2
+    ports:
+      - 8080:8080
