@@ -1,5 +1,8 @@
 package com.example.contactbook.model;
 
+import com.example.contactbook.model.codes.AddressType;
+import com.example.contactbook.model.codes.PhoneType;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
@@ -10,18 +13,21 @@ public class Address {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
-    private String type;
+    @ManyToOne(optional = false)
+    private AddressType addressType;
 
     @Column(nullable = false)
+    @Size(max = 50)
     private String street;
 
+    @Size(max = 255)
     private String additional;
 
     @Size(min = 4, max = 5)
     private String postalCode;
 
     @Column(nullable = false)
+    @Size(max = 50)
     private String city;
 
     @Column(nullable = false)
@@ -35,9 +41,6 @@ public class Address {
         return this.id;
     }
 
-    public String getType() {
-        return this.type;
-    }
 
     public String getStreet() {
         return this.street;
@@ -63,10 +66,6 @@ public class Address {
         this.id = id;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public void setStreet(String street) {
         this.street = street;
     }
@@ -89,6 +88,14 @@ public class Address {
 
 
     public String toString() {
-        return "Address(id=" + this.getId() + ", type=" + this.getType() + ", street=" + this.getStreet() + ", additional=" + this.getAdditional() + ", postalCode=" + this.getPostalCode() + ", city=" + this.getCity() + ", country=" + this.getCountry() + ")";
+        return "Address(id=" + this.getId() + ", type=" + this.getAddressType() + ", street=" + this.getStreet() + ", additional=" + this.getAdditional() + ", postalCode=" + this.getPostalCode() + ", city=" + this.getCity() + ", country=" + this.getCountry() + ")";
+    }
+
+    public AddressType getAddressType() {
+        return addressType;
+    }
+
+    public void setAddressType(AddressType addressType) {
+        this.addressType = addressType;
     }
 }
