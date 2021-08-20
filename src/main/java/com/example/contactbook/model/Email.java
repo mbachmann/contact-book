@@ -45,7 +45,8 @@ public class Email implements Serializable {
     }
 
     public String toString() {
-        return "Email(id=" + this.getId() + ", type=" + this.getEmailType() + ", address=" + this.getAddress() + ")";
+        String emailTypeString = this.getEmailType() != null ? ", type=" + this.getEmailType().getTitle() + ", " + this.getEmailType().getShortCut() : "";
+        return "Email(id=" + this.getId() +  ", address=" + this.getAddress() + emailTypeString + ")";
     }
 
     public EmailType getEmailType() {
@@ -55,4 +56,22 @@ public class Email implements Serializable {
     public void setEmailType(EmailType emailType) {
         this.emailType = emailType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Email)) {
+            return false;
+        }
+        return id != null && id.equals(((Email) o).id);
+    }
+
+    @Override
+    public int hashCode() {
+        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
+        return getClass().hashCode();
+    }
+
 }

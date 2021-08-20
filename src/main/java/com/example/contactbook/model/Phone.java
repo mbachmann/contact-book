@@ -42,7 +42,8 @@ public class Phone implements Serializable {
     }
 
     public String toString() {
-        return "Phone(id=" + this.getId() + ", type=" + this.getPhoneType() + ", number=" + this.getNumber() + ")";
+        String phoneTypeString = this.getPhoneType() != null ? ", type=" + this.getPhoneType().getTitle() + ", " + this.getPhoneType().getShortCut() : "";
+        return "Phone(id=" + this.getId() + ", number=" + this.getNumber() + phoneTypeString + ")";
     }
 
     public PhoneType getPhoneType() {
@@ -52,4 +53,22 @@ public class Phone implements Serializable {
     public void setPhoneType(PhoneType phoneType) {
         this.phoneType = phoneType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Phone)) {
+            return false;
+        }
+        return id != null && id.equals(((Phone) o).id);
+    }
+
+    @Override
+    public int hashCode() {
+        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
+        return getClass().hashCode();
+    }
+
 }

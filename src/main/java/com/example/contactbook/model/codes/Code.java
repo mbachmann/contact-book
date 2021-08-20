@@ -1,5 +1,8 @@
 package com.example.contactbook.model.codes;
 
+import com.example.contactbook.model.Contact;
+import com.example.contactbook.model.enums.CodeType;
+
 import javax.persistence.*;
 
 @Entity
@@ -17,7 +20,7 @@ public class Code {
     protected Long id;
 
     @Column(name = "type", insertable = false, updatable = false)
-    private String type;
+    protected String type;
 
     @Column(nullable = false)
     protected String title;
@@ -78,4 +81,22 @@ public class Code {
     public void setVersion(int version) {
         this.version = version;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Code)) {
+            return false;
+        }
+        return id != null && id.equals(((Code) o).id);
+    }
+
+    @Override
+    public int hashCode() {
+        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
+        return getClass().hashCode();
+    }
+
 }

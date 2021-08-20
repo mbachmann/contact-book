@@ -51,11 +51,11 @@ public class ContactApplication {
 	}
 
 	@Bean
-	public OpenAPI customOpenAPI(@Value("${springdoc.version}") String appVersion, @Value("${todoapp.server}") String contextPath) {
+	public OpenAPI customOpenAPI(@Value("${springdoc.version}") String appVersion, @Value("${contactapp.server}") String contextPath) {
 		return new OpenAPI()
 				.addServersItem(new Server().url(contextPath))
 				.components(new Components())
-				.info(new Info().title("API for Todo App").version(appVersion)
+				.info(new Info().title("API for Contact App").version(appVersion)
 						.license(new License().name("Apache 2.0").url("http://springdoc.org")));
 	}
 

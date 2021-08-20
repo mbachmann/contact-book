@@ -33,6 +33,9 @@ public class Address {
     @Column(nullable = false)
     private String country;
 
+    @Column(nullable = false)
+    private Boolean defaultAddress;
+
 
     public Address() {
     }
@@ -86,9 +89,17 @@ public class Address {
         this.country = country;
     }
 
+    public Boolean getDefaultAddress() {
+        return defaultAddress;
+    }
+
+    public void setDefaultAddress(Boolean defaultAddress) {
+        this.defaultAddress = defaultAddress;
+    }
 
     public String toString() {
-        return "Address(id=" + this.getId() + ", type=" + this.getAddressType() + ", street=" + this.getStreet() + ", additional=" + this.getAdditional() + ", postalCode=" + this.getPostalCode() + ", city=" + this.getCity() + ", country=" + this.getCountry() + ")";
+       String addressTypeString = this.getAddressType() != null ? ", type=" + this.getAddressType().getTitle() + ", " + this.getAddressType().getShortCut() : "";
+        return "Address(id=" + this.getId() +  ", street=" + this.getStreet() + ", additional=" + this.getAdditional() + ", postalCode=" + this.getPostalCode() + ", city=" + this.getCity() + ", country=" + this.getCountry() + addressTypeString + ")";
     }
 
     public AddressType getAddressType() {
@@ -98,4 +109,22 @@ public class Address {
     public void setAddressType(AddressType addressType) {
         this.addressType = addressType;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Address)) {
+            return false;
+        }
+        return id != null && id.equals(((Address) o).id);
+    }
+
+    @Override
+    public int hashCode() {
+        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
+        return getClass().hashCode();
+    }
+
 }
