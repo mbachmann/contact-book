@@ -3,7 +3,7 @@ package com.example.contactbook.controller;
 import com.example.contactbook.controller.advice.ResourceNotFoundException;
 import com.example.contactbook.model.Contact;
 import com.example.contactbook.model.projection.ContactView;
-import com.example.contactbook.model.projection.ContactViewSmall;
+import com.example.contactbook.model.projection.ContactViewList;
 import com.example.contactbook.service.ContactService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -26,8 +27,8 @@ public class ContactController {
 
 
     @GetMapping("/list")
-    protected List<ContactViewSmall> findAllContactSmall() {
-        return contactService.findAllContactViewsSmall(null);
+    protected List<ContactViewList> findAllContactSmall() {
+        return contactService.findAllContactViewsList(null, Arrays.asList("A-Contacts", "B-Contacts"));
     }
 
     @GetMapping("/")

@@ -2,7 +2,7 @@ package com.example.contactbook.service;
 
 import com.example.contactbook.model.Contact;
 import com.example.contactbook.model.projection.ContactView;
-import com.example.contactbook.model.projection.ContactViewSmall;
+import com.example.contactbook.model.projection.ContactViewList;
 import com.example.contactbook.repository.ContactRepository;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +14,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ContactService  {
 
     @Autowired
@@ -53,6 +55,8 @@ public class ContactService  {
             Hibernate.initialize(contact.getPhones());
             Hibernate.initialize(contact.getAddresses());
             Hibernate.initialize(contact.getEmails());
+            Hibernate.initialize(contact.getRelations());
+            Hibernate.initialize(contact.getGroups());
         }
         return contact;
     }
@@ -84,12 +88,12 @@ public class ContactService  {
         return contactRepository.findAllContactViews(pageable);
     }
 
-    public List<ContactViewSmall> findAllContactViewsSmall(String filter) {
-        return contactRepository.findAllContactViewsSmall(Sort.by(Sort.Direction.ASC, "name"), filter);
+    public List<ContactViewList> findAllContactViewsList(String filter, List<String> groups) {
+        return contactRepository.findAllContactViewsList(Sort.by(Sort.Direction.ASC, "name"), filter, groups); //, groups);
     }
 
-    public Page<ContactViewSmall> findAllContactViewsSmall(Pageable pageable, String filter) {
-        List<ContactViewSmall> contacts =  contactRepository.findAllContactViewsSmall(pageable, filter);
+    public Page<ContactViewList> findAllContactViewsList(Pageable pageable, String filter, List<String> groups) {
+        List<ContactViewList> contacts =  contactRepository.findAllContactViewsList(pageable, filter, groups); //, groups);
         return createPage(contacts, pageable);
     }
 
@@ -106,13 +110,14 @@ public class ContactService  {
 
     public Page<Contact> findAllContactsWithEagerRelationships(Pageable pageable, String filter) {
 
-        if (filter == null || filter.isEmpty()) {
+        if (filter == null) {
            return findAllContactsWithEagerRelationships(pageable);
         } else {
             List<Contact> contactListWithDuplicates = contactRepository.findAllWithEagerRelationships(pageable, filter);
             List<Contact> contacts = contactListWithDuplicates.stream()
                     .distinct()
                     .collect(Collectors.toList());
+            // contactRepository.count()
             return createPage(contacts, pageable);
         }
     }

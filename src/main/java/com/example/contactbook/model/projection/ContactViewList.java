@@ -4,7 +4,7 @@ package com.example.contactbook.model.projection;
 import io.swagger.v3.oas.annotations.media.Schema;
 import javax.persistence.Lob;
 
-public interface ContactViewSmall {
+public interface ContactViewList {
     // @Value("#{target.id}")
     Long getId();
     @Schema(description = "companyname lastname firstname")
@@ -20,5 +20,9 @@ public interface ContactViewSmall {
     String getPhonesAggregate();
     @Schema(description = "Aggregated email addresses")
     String getEmailsAggregate();
+    @Schema(description = "Aggregated group id's")
+    String getGroupsIdAggregate();
+    @Schema(description = "Aggregated relations id's")
+    String getRelationsIdAggregate();
 }
 

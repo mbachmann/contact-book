@@ -46,7 +46,7 @@ class ContactTest {
         contact.setPhoto(TestUtil.readImageFromResource("image/firstContact.png"));
         contact.setPhotoContentType("image/png");
         contact.setThumbNail(ImageProcessing.createThumbnail(contact.getPhoto(), 32, contact.getPhotoContentType()).toByteArray());
-        String temp =  "Contact(id=null, firstName=Anna, middleName=Marta, lastName=Muster, company=Example Company Ltd, birthDate=2000-12-12, notes=First Contact, photoContentType=image/png, phonesAggregate=null, addressesAggregate=null, emailsAggregate=null)";
+        String temp =  "Contact(id=null, firstName=Anna, middleName=Marta, lastName=Muster, company=Example Company Ltd, birthDate=2000-12-12, notes=First Contact, photoContentType=image/png, phonesAggregate=null, addressesAggregate=null, emailsAggregate=null, addresses=[], phones=[], emails=[])";
         assertThat(temp).isEqualTo(contact.toString());
 
         Address address = new Address();
