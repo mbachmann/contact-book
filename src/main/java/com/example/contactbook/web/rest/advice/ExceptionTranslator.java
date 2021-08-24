@@ -90,12 +90,12 @@ public class ExceptionTranslator implements ProblemHandling /*, SecurityAdviceTr
     @Override
     public ResponseEntity<Problem> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, @Nonnull NativeWebRequest request) {
         BindingResult result = ex.getBindingResult();
-        List<FieldErrorVM> fieldErrors = result
+        List<FieldErrorDTO> fieldErrors = result
             .getFieldErrors()
             .stream()
             .map(
                 f ->
-                    new FieldErrorVM(
+                    new FieldErrorDTO(
                         f.getObjectName().replaceFirst("DTO$", ""),
                         f.getField(),
                         StringUtils.isNotBlank(f.getDefaultMessage()) ? f.getDefaultMessage() : f.getCode()
