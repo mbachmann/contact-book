@@ -88,13 +88,16 @@ public class ContactService  {
         return contactRepository.findAllContactViews(pageable);
     }
 
-    public List<ContactViewList> findAllContactViewsList(String filter, List<String> groups) {
-        return contactRepository.findAllContactViewsList(Sort.by(Sort.Direction.ASC, "name"), filter, groups); //, groups);
+    public List<ContactViewList> findAllContactViewsList(String filter, List<String> groups, List<String> relations) {
+        if (groups == null) groups = Arrays.asList("*");
+        if (relations == null) relations = Arrays.asList("*");
+        return contactRepository.findAllContactViewsList(Sort.by(Sort.Direction.ASC, "name"), filter, groups, relations); //, groups);
     }
 
-    public Page<ContactViewList> findAllContactViewsList(Pageable pageable, String filter, List<String> groups) {
-        List<ContactViewList> contacts =  contactRepository.findAllContactViewsList(pageable, filter, groups); //, groups);
-        return createPage(contacts, pageable);
+    public Page<ContactViewList> findAllContactViewsList(Pageable pageable, String filter, List<String> groups, List<String> relations) {
+        if (groups == null) groups = Arrays.asList("*");
+        if (relations == null) relations = Arrays.asList("*");
+        return contactRepository.findAllContactViewsList(pageable, filter, groups, relations);
     }
 
     public List<Contact> findAllContactsWithEagerRelationships() {
@@ -117,12 +120,12 @@ public class ContactService  {
             List<Contact> contacts = contactListWithDuplicates.stream()
                     .distinct()
                     .collect(Collectors.toList());
-            // contactRepository.count()
-            return createPage(contacts, pageable);
+            int totalSize = contactRepository.countAllWithFilter(filter);
+            return createPage(contacts, pageable, totalSize);
         }
     }
 
-    private <T> Page<T> createPage(List<T> contacts, Pageable pageable) {
+    private <T> Page<T> createPage(List<T> contacts, Pageable pageable, int totalSize) {
         int total = contacts.size();
         int start = Math.toIntExact(pageable.getOffset());
         int end = Math.min((start + pageable.getPageSize()), total);
@@ -130,7 +133,7 @@ public class ContactService  {
         List<T> output = new ArrayList<>();
         if (start <= end) output = contacts.subList(start, end);
 
-        return new PageImpl<>(output, pageable, total);
+        return new PageImpl<>(output, pageable, totalSize);
     }
 
 

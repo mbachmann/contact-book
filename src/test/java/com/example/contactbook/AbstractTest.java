@@ -1,5 +1,6 @@
 package com.example.contactbook;
 
+import com.example.contactbook.model.projection.ContactViewList;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -54,6 +55,20 @@ public abstract class AbstractTest {
             e.printStackTrace();
         }
         return null;
+    }
+
+    protected void printContacts(List<ContactViewList> contacts, String title) {
+        contacts.forEach(contact -> {
+            System.out.println(title);
+            System.out.println(contact.getId());
+            System.out.println(contact.getName());
+            System.out.println(contact.getBirthDate());
+            System.out.println(contact.getAddressesAggregate());
+            System.out.println(contact.getPhonesAggregate());
+            System.out.println(contact.getEmailsAggregate());
+            System.out.println(contact.getRelationsIdAggregate());
+            System.out.println(contact.getGroupsIdAggregate());
+        });
     }
 
 }

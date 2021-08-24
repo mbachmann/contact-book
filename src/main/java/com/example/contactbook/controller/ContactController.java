@@ -28,7 +28,7 @@ public class ContactController {
 
     @GetMapping("/list")
     protected List<ContactViewList> findAllContactSmall() {
-        return contactService.findAllContactViewsList(null, Arrays.asList("A-Contacts", "B-Contacts"));
+        return contactService.findAllContactViewsList(null, Arrays.asList("A-Contacts", "B-Contacts"), null);
     }
 
     @GetMapping("/")

@@ -71,63 +71,43 @@ public class ContactServiceTest  extends AbstractTest {
 
     @Test
     public void getContactViewsList() throws Exception {
-        List<ContactViewList> contacts = contactService.findAllContactViewsList(null, Arrays.asList("A-Contacts","B-Contacts"));
+        List<ContactViewList> contacts = contactService.findAllContactViewsList(null, Arrays.asList("A-Contacts","B-Contacts"), null);
         assertTrue(contacts.size() > 0);
-        contacts.forEach(contact -> {
-            System.out.println(contact.getId());
-            System.out.println(contact.getName());
-            System.out.println(contact.getAddressesAggregate());
-            System.out.println(contact.getPhonesAggregate());
-            System.out.println(contact.getEmailsAggregate());
-            System.out.println(contact.getRelationsIdAggregate());
-            System.out.println(contact.getGroupsIdAggregate());
-        });
+        printContacts(contacts, "A-Contacts, B-Contacts");
     }
 
     @Test
     public void getContactViewsListPageable() throws Exception {
         Pageable sortedByName = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC, "name"));
-        // Page<ContactViewList> contactsPage = contactService.findAllContactViewsList(sortedByName, null, new String[]{"A-Contacts", "B-Contacts"});
-        Page<ContactViewList> contactsPage = contactService.findAllContactViewsList(sortedByName, null, Arrays.asList("A-Contacts","B-Contacts"));
+        Page<ContactViewList> contactsPage = contactService.findAllContactViewsList(sortedByName, null, Arrays.asList("A-Contacts","B-Contacts"), null);
         assertTrue(contactsPage.getTotalElements() > 0);
         List<ContactViewList> contacts = contactsPage.getContent();
         assertTrue(contactsPage.getTotalElements() >= contacts.size());
-        contacts.forEach(contact -> {
-            System.out.println("Group A-Contacts and B-Contacts");
-            System.out.println(contact.getId());
-            System.out.println(contact.getName());
-            System.out.println(contact.getAddressesAggregate());
-            System.out.println(contact.getPhonesAggregate());
-            System.out.println(contact.getEmailsAggregate());
-            System.out.println(contact.getRelationsIdAggregate());
-            System.out.println(contact.getGroupsIdAggregate());
-        });
+        printContacts(contacts, "Paged: A-Contacts, B-Contacts");
+
+        contactsPage = contactService.findAllContactViewsList(sortedByName, "1991", null, null);
+        assertTrue(contactsPage.getTotalElements() > 0);
+        contacts = contactsPage.getContent();
+        assertTrue(contactsPage.getTotalElements() >= contacts.size());
+        printContacts(contacts, "Paged: 1991");
+
     }
 
     @Test
     public void getContactViewsListPageableFilter() throws Exception {
         Pageable sortedByName = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, "name"));
-        Page<ContactViewList> contactsPage = contactService.findAllContactViewsList(sortedByName, "Anna", Arrays.asList("A-Contacts","B-Contacts"));
+        Page<ContactViewList> contactsPage = contactService.findAllContactViewsList(sortedByName, "Anna", Arrays.asList("A-Contacts","B-Contacts"), null);
 
         assertTrue(contactsPage.getTotalElements() > 0);
         List<ContactViewList> contacts = contactsPage.getContent();
         assertTrue(contactsPage.getTotalElements() >= contacts.size());
 
-       contactsPage = contactService.findAllContactViewsList(sortedByName, "Basel", Arrays.asList("A-Contacts","B-Contacts"));
+       contactsPage = contactService.findAllContactViewsList(sortedByName, "Basel", Arrays.asList("A-Contacts","B-Contacts"), null);
 
         assertTrue(contactsPage.getTotalElements() > 0);
         contacts = contactsPage.getContent();
         assertTrue(contactsPage.getTotalElements() >= contacts.size());
-        contacts.forEach(contact -> {
-            System.out.println("Filter to Basel");
-            System.out.println(contact.getId());
-            System.out.println(contact.getName());
-            System.out.println(contact.getAddressesAggregate());
-            System.out.println(contact.getPhonesAggregate());
-            System.out.println(contact.getEmailsAggregate());
-            System.out.println(contact.getRelationsIdAggregate());
-            System.out.println(contact.getGroupsIdAggregate());
-        });
+        printContacts(contacts, "Paged: Basel " + "A-Contacts, B-Contacts");
     }
 
 
@@ -206,10 +186,10 @@ public class ContactServiceTest  extends AbstractTest {
     public void getAllContactsWithEagerRelationshipsGroup() throws Exception {
         Pageable sortedByName = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, "lastName", "firstName"));
 
-        String filter = "A-Contacts";
+        String filter = "Mustermann";
 
         Page<Contact> contactsPage = contactService.findAllContactsWithEagerRelationships(sortedByName, filter);
-        assertEquals(2, contactsPage.getTotalElements());
+        assertEquals(1, contactsPage.getTotalElements());
         List<Contact> contacts = contactsPage.getContent();
         assertTrue(contactsPage.getTotalElements() >= contacts.size());
     }
@@ -218,11 +198,13 @@ public class ContactServiceTest  extends AbstractTest {
     public void getAllContactsWithEagerRelationshipsRelation() throws Exception {
         Pageable sortedByName = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, "lastName", "firstName"));
 
-        String filter = ContactRelationType.CUSTOMER.getValue();
+        String filter = "+41 61 812 34 56";
 
         Page<Contact> contactsPage = contactService.findAllContactsWithEagerRelationships(sortedByName, filter);
         assertEquals(1, contactsPage.getTotalElements());
         List<Contact> contacts = contactsPage.getContent();
         assertTrue(contactsPage.getTotalElements() >= contacts.size());
     }
+
+
 }

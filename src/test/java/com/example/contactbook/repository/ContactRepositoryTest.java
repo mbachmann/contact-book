@@ -59,34 +59,17 @@ public class ContactRepositoryTest extends AbstractTest {
 
     @Test
     public void getAllContactViewsList() throws Exception {
-        List<ContactViewList> contacts = contactRepository.findAllContactViewsList(Sort.by(Sort.Direction.ASC, "name"), null, Arrays.asList("*")); // , Arrays.asList("A-Contacts"));
+        List<ContactViewList> contacts = contactRepository.findAllContactViewsList(Sort.by(Sort.Direction.ASC, "name"), null, Arrays.asList("*"), Arrays.asList("*")); // , Arrays.asList("A-Contacts"));
         assertTrue(contacts.size() > 0);
-        contacts.forEach(contact -> {
-            System.out.println("Repository Test Filter to *");
-            System.out.println(contact.getId());
-            System.out.println(contact.getName());
-            System.out.println(contact.getAddressesAggregate());
-            System.out.println(contact.getPhonesAggregate());
-            System.out.println(contact.getEmailsAggregate());
-            System.out.println(contact.getRelationsIdAggregate());
-            System.out.println(contact.getGroupsIdAggregate());
-        });
+        printContacts(contacts, "Repository Test Filter to *");
+
     }
 
     @Test
     public void getAllContactViewsListNoGroup() throws Exception {
-        List<ContactViewList> contacts = contactRepository.findAllContactViewsList(Sort.by(Sort.Direction.ASC, "name"), null, Arrays.asList("-")); // , Arrays.asList("A-Contacts"));
+        List<ContactViewList> contacts = contactRepository.findAllContactViewsList(Sort.by(Sort.Direction.ASC, "name"), null, Arrays.asList("-"), Arrays.asList("*")); // , Arrays.asList("A-Contacts"));
         assertTrue(contacts.size() > 0);
-        contacts.forEach(contact -> {
-            System.out.println("Repository Test Filter to - (no Group)");
-            System.out.println(contact.getId());
-            System.out.println(contact.getName());
-            System.out.println(contact.getAddressesAggregate());
-            System.out.println(contact.getPhonesAggregate());
-            System.out.println(contact.getEmailsAggregate());
-            System.out.println(contact.getRelationsIdAggregate());
-            System.out.println(contact.getGroupsIdAggregate());
-        });
+        printContacts(contacts, "Repository Test Filter to - (no Group)");
     }
 
 
