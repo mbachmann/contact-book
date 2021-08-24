@@ -1,5 +1,8 @@
-package com.example.contactbook.controller.advice;
+package com.example.contactbook.web.rest.advice;
 
+/*
+import com.example.contactbook.web.rest.exception.ResourceAlreadyExistsException;
+import com.example.contactbook.web.rest.exception.ResourceNotFoundException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -8,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
@@ -33,6 +37,12 @@ public class GlobalControllerAdvice  extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, "Resource not found: " + ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(value = ResponseStatusException.class)
+    protected ResponseEntity<Object> handleResponseStatusException(ResourceNotFoundException ex, WebRequest request) {
+        return handleExceptionInternal(ex, "Resource not found: " + ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
     @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(value = ResourceAlreadyExistsException.class)
     protected ResponseEntity<Object> handleResourceAlreadExists(ResourceAlreadyExistsException ex, WebRequest request) {
@@ -53,3 +63,4 @@ public class GlobalControllerAdvice  extends ResponseEntityExceptionHandler {
     }
 
 }
+*/

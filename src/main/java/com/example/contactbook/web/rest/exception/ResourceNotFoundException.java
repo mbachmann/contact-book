@@ -1,4 +1,4 @@
-package com.example.contactbook.controller.advice;
+package com.example.contactbook.web.rest.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
 

@@ -1,4 +1,4 @@
-package com.example.contactbook.controller;
+package com.example.contactbook.web.rest;
 
 import com.example.contactbook.AbstractTest;
 import com.example.contactbook.model.Contact;
@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ContactControllerTest extends AbstractTest {
+public class ContactResourceIT extends AbstractTest {
 
     @Autowired
     ContactRepository customerRepository;

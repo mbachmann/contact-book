@@ -1,6 +1,6 @@
-package com.example.contactbook.controller;
+package com.example.contactbook.web.rest;
 
-import com.example.contactbook.controller.advice.ResourceNotFoundException;
+import com.example.contactbook.web.rest.exception.ResourceNotFoundException;
 import com.example.contactbook.model.Contact;
 import com.example.contactbook.model.projection.ContactView;
 import com.example.contactbook.model.projection.ContactViewList;
@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/contacts")
-public class ContactController {
+public class ContactResource {
 
     @Autowired
     private ContactService contactService;
