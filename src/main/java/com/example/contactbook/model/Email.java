@@ -19,11 +19,16 @@ public class Email implements Serializable {
     private EmailType emailType;
 
     @Column(nullable = false)
+    @Size(min = 2, max = 40)
     private String address;
 
-    @Pattern(regexp = "\\w+@\\w+\\.\\w+(,\\s*\\w+@\\w+\\.\\w+)*")
-    @Size(min = 2, max = 40)
+
     public Email() {
+    }
+
+    public Email(String address, EmailType emailType) {
+        this.address = address;
+        this.emailType = emailType;
     }
 
     public Long getId() {

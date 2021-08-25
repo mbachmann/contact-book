@@ -1,6 +1,7 @@
 package com.example.contactbook;
 
 import com.example.contactbook.model.projection.ContactViewList;
+import com.example.contactbook.utils.HasLogger;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -20,7 +21,7 @@ import java.util.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public abstract class AbstractTest {
+public abstract class AbstractTest implements HasLogger {
     protected MockMvc mvc;
     @Autowired
     WebApplicationContext webApplicationContext;
@@ -31,6 +32,7 @@ public abstract class AbstractTest {
 
     protected String mapToJson(Object obj) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
         return objectMapper.writeValueAsString(obj);
     }
     protected <T> T mapFromJson(String json, Class<T> clazz)

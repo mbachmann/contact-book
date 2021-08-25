@@ -105,10 +105,10 @@ public class ContactGroup implements Serializable {
 
     public void setContacts(Set<Contact> contacts) {
         if (this.contacts != null) {
-            this.contacts.forEach(i -> i.removeGroups(this));
+            this.contacts.forEach(i -> i.removeGroup(this));
         }
         if (contacts != null) {
-            contacts.forEach(i -> i.addGroups(this));
+            contacts.forEach(i -> i.addGroup(this));
         }
         this.contacts = contacts;
     }

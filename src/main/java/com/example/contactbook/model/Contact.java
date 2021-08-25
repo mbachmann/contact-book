@@ -2,6 +2,8 @@ package com.example.contactbook.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.*;
@@ -94,14 +96,22 @@ public class Contact  {
     @JsonIgnoreProperties(value = { "contacts" }, allowSetters = true)
     private Set<ContactGroup> groups = new HashSet<>();
 
-
     public Contact() {
     }
+
+    public Contact(String firstName, String lastName, String middleName, LocalDate birthDate, String company, String notes) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.middleName = middleName;
+        this.birthDate = birthDate;
+        this.company = company;
+        this.notes = notes;
+    }
+
 
     public Long getId() {
         return this.id;
     }
-
 
     public byte[] getPhoto() {
         return this.photo;
@@ -236,13 +246,14 @@ public class Contact  {
         return this;
     }
 
-    public Contact addRelations(ContactRelation contactRelation) {
+    public Contact addRelation(ContactRelation contactRelation) {
+        if (this.relations == null) relations = new HashSet<>();
         this.relations.add(contactRelation);
         contactRelation.getContacts().add(this);
         return this;
     }
 
-    public Contact removeRelations(ContactRelation contactRelation) {
+    public Contact removeRelation(ContactRelation contactRelation) {
         this.relations.remove(contactRelation);
         contactRelation.getContacts().remove(this);
         return this;
@@ -261,13 +272,14 @@ public class Contact  {
         return this;
     }
 
-    public Contact addGroups(ContactGroup contactGroup) {
+    public Contact addGroup(ContactGroup contactGroup) {
+        if (this.groups == null) groups = new HashSet<>();
         this.groups.add(contactGroup);
         contactGroup.getContacts().add(this);
         return this;
     }
 
-    public Contact removeGroups(ContactGroup contactGroup) {
+    public Contact removeGroup(ContactGroup contactGroup) {
         this.groups.remove(contactGroup);
         contactGroup.getContacts().remove(this);
         return this;
@@ -275,6 +287,36 @@ public class Contact  {
 
     public void setGroups(Set<ContactGroup> contactGroups) {
         this.groups = contactGroups;
+    }
+
+    public Contact addAddress(Address address) {
+        this.addresses.add(address);
+        return this;
+    }
+
+    public Contact removeAddress(Address address) {
+        this.addresses.remove(address);
+        return this;
+    }
+
+    public Contact addPhone(Phone phone) {
+        this.phones.add(phone);
+        return this;
+    }
+
+    public Contact removePhone(Phone phone) {
+        this.phones.remove(phone);
+        return this;
+    }
+
+    public Contact addEmail(Email email) {
+        this.emails.add(email);
+        return this;
+    }
+
+    public Contact removeEmail(Email email) {
+        this.emails.remove(email);
+        return this;
     }
 
 

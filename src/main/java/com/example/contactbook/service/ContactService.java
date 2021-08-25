@@ -50,7 +50,7 @@ public class ContactService  {
     }
 
     @Transactional
-    public Optional<Contact> findContactEagerById(Long id) {
+    public Optional<Contact> findContactEagerHibernateById(Long id) {
         Optional<Contact> contact= contactRepository.findById(id);
 
         if (contact.isPresent()) {
@@ -63,6 +63,11 @@ public class ContactService  {
         return contact;
     }
 
+    public Optional<Contact> findContactEagerById(Long id) {
+        Optional<Contact> contact= contactRepository.findByIdWithEagerRelationships(id);
+
+        return contact;
+    }
 
     public boolean deleteContactById(Long id) {
         Contact contact = contactRepository.findById(id).orElse(null);
@@ -72,7 +77,6 @@ public class ContactService  {
         }
         return false;
     }
-
 
     public List<Contact> findAll() {
         return contactRepository.findAll(Sort.by(Sort.Direction.ASC, "lastName", "firstName"));
@@ -144,8 +148,9 @@ public class ContactService  {
     }
 
     public boolean existsById(Long id) {
-        return contactRepository.existsById(id);
+        return !contactRepository.existsById(id);
     }
+
 
 
 }

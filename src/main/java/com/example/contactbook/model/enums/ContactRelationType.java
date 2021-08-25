@@ -6,10 +6,12 @@ package com.example.contactbook.model.enums;
 public enum ContactRelationType {
     CUSTOMER("CL"),
     CREDITOR("CR"),
-    TEAM("TE"),
+    COLLEAGUES("CO"),
     AUTORITY("AT"),
     MEDICAL("ME"),
-    OTHERS("OT");
+    OTHERS("OT"),
+    FAMILIY("FA"),
+    FRIENDS("FR");
 
     private final String value;
 

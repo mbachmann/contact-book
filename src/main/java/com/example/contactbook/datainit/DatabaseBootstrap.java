@@ -73,12 +73,12 @@ public class DatabaseBootstrap implements InitializingBean, HasLogger {
             addressType = new AddressType("School","S");
             codeRepository.save(addressType);
 
-            ContactRelation contactRelation = new ContactRelation();
-            contactRelation.setContactRelationType(ContactRelationType.CREDITOR);
-            contactRelationRepository.save(contactRelation);
-            contactRelation = new ContactRelation();
-            contactRelation.setContactRelationType(ContactRelationType.CUSTOMER);
-            contactRelationRepository.save(contactRelation);
+            ContactRelationType[] relations = ContactRelationType.values();
+            for(ContactRelationType relation: relations) {
+                ContactRelation contactRelation = new ContactRelation();
+                contactRelation.setContactRelationType(relation);
+                contactRelationRepository.save(contactRelation);
+            }
 
             ContactGroup contactGroup = new ContactGroup();
             contactGroup.setName("A-Contacts");
@@ -114,7 +114,7 @@ public class DatabaseBootstrap implements InitializingBean, HasLogger {
             AddressType addressType = (AddressType)codeRepository.findByTypeAndTitle(CodeType.AddressType.getValue(),"School");
             address.setAddressType(addressType);
             address.setDefaultAddress(true);
-            contact.getAddresses().add(address);
+            contact.addAddress(address);
 
             ContactRelation relation = contactRelationRepository.findContactRelationByContactRelationType(ContactRelationType.CUSTOMER);
             relation.addContacts(contact);
@@ -129,17 +129,11 @@ public class DatabaseBootstrap implements InitializingBean, HasLogger {
 
     private void createSecondContact() throws IOException {
         if (contactService.findByFirstNameAndLastName("Felix", "Muster") == null) {
-            Contact contact = new Contact();
-            contact.setFirstName("Felix");
-            contact.setLastName("Muster");
-            contact.setMiddleName("Franz");
-            contact.setBirthDate(LocalDate.of(1990, 1,8));
-            contact.setCompany("Great Company Ltd");
-            contact.setNotes("Second Contact");
-
+            Contact contact = new Contact("Felix", "Muster", "Franz", LocalDate.of(1990, 1,8), "Great Company Ltd", "Second Contact");
             // Todo Uncomment
             // contact.setPhoto(readImageFromResource("image/secondContact.png"));
             // contact.setPhotoContentType("image/png");
+
             ContactRelation relation = contactRelationRepository.findContactRelationByContactRelationType(ContactRelationType.CREDITOR);
             relation.addContacts(contact);
 
@@ -148,7 +142,6 @@ public class DatabaseBootstrap implements InitializingBean, HasLogger {
             group = contactGroupRepository.findContactGroupByName("B-Contacts");
             group.addContacts(contact);
 
-
             contactService.save(contact);
             getLogger().info(contact.getFirstName() + " " + contact.getLastName() + " created");
         }
@@ -156,45 +149,23 @@ public class DatabaseBootstrap implements InitializingBean, HasLogger {
 
     private void createThirdContact() throws IOException {
         if (contactService.findByFirstNameAndLastName("Max", "Mustermann") == null) {
-            Contact contact = new Contact();
-            contact.setFirstName("Max");
-            contact.setLastName("Mustermann");
-            contact.setMiddleName("Fritz");
-            contact.setBirthDate(LocalDate.of(1980, 2,8));
-            contact.setCompany("Example Company Ltd");
-            contact.setNotes("Thrid Contact");
+            Contact contact = new Contact("Max", "Mustermann", "Fritz", LocalDate.of(1980, 2,8), "Example Company Ltd", "Thrid Contact");
 
             // Todo Uncomment
             // contact.setPhoto(readImageFromResource("image/secondContact.png"));
 
-            Address address = new Address();
-            address.setCity("Zürich");
-            address.setCountry("Schweiz");
-            address.setPostalCode("8000");
-            address.setStreet("Aeschengraben");
-            // AddressType addressType = (AddressType)codeRepository.findByTypeAndTitle("AddressType","Home");
             AddressType addressType = (AddressType)codeRepository.findByTypeAndTitle(CodeType.AddressType.getValue(),"Home");
-            address.setAddressType(addressType);
-            address.setDefaultAddress(true);
-            contact.getAddresses().add(address);
+            Address address = new Address("Aeschengraben", "8000", "Zürich", "CH", true, addressType);
+            contact.addAddress(address);
 
-            address = new Address();
-            address.setCity("Aarau");
-            address.setCountry("Schweiz");
-            address.setPostalCode("5000");
-            address.setStreet("Bahnhofstrasse");
-            // AddressType addressType = (AddressType)codeRepository.findByTypeAndTitle("AddressType","Home");
             addressType = (AddressType)codeRepository.findByTypeAndTitle(CodeType.AddressType.getValue(),"Business");
-            address.setAddressType(addressType);
-            address.setDefaultAddress(false);
-            contact.getAddresses().add(address);
+            address = new Address("Bahnhofstrasse", "5000", "Aarau", "CH", true, addressType);
+            contact.addAddress(address);
 
-            Phone phone = new Phone();
-            phone.setNumber("+41 61 812 34 56");
-            // PhoneType phoneType = (PhoneType)codeRepository.findByTypeAndTitle("PhoneType","Home");
+
             PhoneType phoneType = (PhoneType)codeRepository.findByTypeAndTitle(CodeType.PhoneType.getValue(),"Home");
-            phone.setPhoneType(phoneType);
-            contact.getPhones().add(phone);
+            Phone phone = new Phone("+41 61 812 34 56", phoneType);
+            contact.addPhone(phone);
 
             phone = new Phone();
             phone.setNumber("+41 62 546 12 56");
@@ -203,12 +174,10 @@ public class DatabaseBootstrap implements InitializingBean, HasLogger {
             phone.setPhoneType(phoneType);
             contact.getPhones().add(phone);
 
-            Email email = new Email();
-            email.setAddress("max.mustermann@example.com");
-            // EmailType emailType = (EmailType)codeRepository.findByTypeAndTitle("EmailType","Home");
+
             EmailType emailType = (EmailType)codeRepository.findByTypeAndTitle(CodeType.EmailType.getValue(),"Home");
-            email.setEmailType(emailType);
-            contact.getEmails().add(email);
+            Email email = new Email("max.mustermann@example.com", emailType);
+            contact.addEmail(email);
 
             email = new Email();
             email.setAddress("max.mustermann@gmail.com");
@@ -232,13 +201,7 @@ public class DatabaseBootstrap implements InitializingBean, HasLogger {
 
     private void createForthContact() throws IOException {
         if (contactService.findByFirstNameAndLastName("John", "Doe") == null) {
-            Contact contact = new Contact();
-            contact.setFirstName("John");
-            contact.setLastName("Doe");
-            contact.setMiddleName("Jack");
-            contact.setBirthDate(LocalDate.of(1991, 2,9));
-            contact.setCompany("John Doe Company Ltd");
-            contact.setNotes("Forth Contact");
+            Contact contact = new Contact("John", "Doe", "Jack", LocalDate.of(1991, 2,9), "John Doe Company Ltd", "Forth Contact");
 
             // Todo Uncomment
             // contact.setPhoto(readImageFromResource("image/secondContact.png"));
@@ -259,13 +222,7 @@ public class DatabaseBootstrap implements InitializingBean, HasLogger {
 
     private void createFifthContact() throws IOException {
         if (contactService.findByFirstNameAndLastName("Laurent", "Mathis") == null) {
-            Contact contact = new Contact();
-            contact.setFirstName("Laurent");
-            contact.setLastName("Mathis");
-            contact.setMiddleName("Jean");
-            contact.setBirthDate(LocalDate.of(1989, 4, 10));
-            contact.setNotes("Fifth Contact");
-
+            Contact contact = new Contact("Laurent", "Mathis", "Jean", LocalDate.of(1989, 4, 10), null, "Fifth Contact");
 
             // Todo Uncomment
             // contact.setPhoto(readImageFromResource("image/secondContact.png"));

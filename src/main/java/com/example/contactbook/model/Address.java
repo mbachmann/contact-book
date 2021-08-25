@@ -40,6 +40,15 @@ public class Address {
     public Address() {
     }
 
+    public Address(String street, String postalCode, String city, String country, boolean defaultAddress, AddressType addressType) {
+        this.street = street;
+        this.postalCode = postalCode;
+        this.city = city;
+        this.country = country;
+        this.defaultAddress = defaultAddress;
+        this.addressType = addressType;
+    }
+
     public Long getId() {
         return this.id;
     }

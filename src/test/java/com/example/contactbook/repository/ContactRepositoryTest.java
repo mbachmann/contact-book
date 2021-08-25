@@ -23,6 +23,7 @@ import org.springframework.data.querydsl.SimpleEntityPathResolver;
 import javax.persistence.EntityManager;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -55,6 +56,12 @@ public class ContactRepositoryTest extends AbstractTest {
     public void getAllContacts() throws Exception {
         List<Contact> contacts = contactRepository.findAll();
         assertTrue(contacts.size() > 0);
+    }
+
+    @Test
+    public void getContactById() throws Exception {
+        Optional<Contact> optionalContact = contactRepository.findByIdWithEagerRelationships(1L);
+        optionalContact.ifPresent(contact -> getLogger().debug(contact.toString()));
     }
 
     @Test

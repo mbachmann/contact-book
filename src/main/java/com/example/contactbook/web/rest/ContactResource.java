@@ -118,7 +118,7 @@ public class ContactResource implements HasLogger {
         if (!Objects.equals(id, contact.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
-        if (!contactService.existsById(id)) {
+        if (contactService.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
         Contact result = contactService.edit(contact);
@@ -164,7 +164,7 @@ public class ContactResource implements HasLogger {
      */
     @DeleteMapping("/contacts/{id}")
     protected ResponseEntity<Boolean> delete(@PathVariable Long id) {
-        if (!contactService.existsById(id)) {
+        if (contactService.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
         return ResponseEntity.ok(contactService.deleteContactById(id));

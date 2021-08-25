@@ -90,10 +90,10 @@ public class ContactRelation implements Serializable {
 
     public void setContacts(Set<Contact> contacts) {
         if (this.contacts != null) {
-            this.contacts.forEach(i -> i.removeRelations(this));
+            this.contacts.forEach(i -> i.removeRelation(this));
         }
         if (contacts != null) {
-            contacts.forEach(i -> i.addRelations(this));
+            contacts.forEach(i -> i.addRelation(this));
         }
         this.contacts = contacts;
     }
