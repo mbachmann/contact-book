@@ -15,6 +15,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ContactRepository extends JpaRepository<Contact, Long>, QuerydslPredicateExecutor<Contact> {
 
@@ -115,7 +116,7 @@ public interface ContactRepository extends JpaRepository<Contact, Long>, Queryds
     int countAllWithFilter(@Param("filter") String filter);
 
     @Query("select c from Contact c left join fetch c.addresses left join fetch c.emails left join fetch c.phones  left join fetch c.groups left join fetch c.relations where c.id =:id")
-    Contact findByIdWithEagerRelationships(@Param("id") Long id);
+    Optional<Contact> findByIdWithEagerRelationships(@Param("id") Long id);
 
     @EntityGraph(value = "contact-entity-graph")
     @NonNull

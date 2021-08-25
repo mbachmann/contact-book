@@ -43,6 +43,7 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -66,7 +67,12 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.5.8</version>
+			<version>1.5.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-data-rest</artifactId>
+			<version>1.5.10</version>
 		</dependency>
 		<dependency>
 			<groupId>org.imgscalr</groupId>

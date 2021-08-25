@@ -2,7 +2,6 @@ package com.example.contactbook.service;
 
 import com.example.contactbook.AbstractTest;
 import com.example.contactbook.model.Contact;
-import com.example.contactbook.model.enums.ContactRelationType;
 import com.example.contactbook.model.projection.ContactView;
 import com.example.contactbook.model.projection.ContactViewList;
 import org.junit.jupiter.api.AfterEach;
@@ -16,6 +15,7 @@ import org.springframework.data.domain.Sort;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -195,7 +195,7 @@ public class ContactServiceTest  extends AbstractTest {
     }
 
     @Test
-    public void getAllContactsWithEagerRelationshipsRelation() throws Exception {
+    public void getAllContactsWithEagerRelationshipsRelation()  {
         Pageable sortedByName = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, "lastName", "firstName"));
 
         String filter = "+41 61 812 34 56";
@@ -205,6 +205,18 @@ public class ContactServiceTest  extends AbstractTest {
         List<Contact> contacts = contactsPage.getContent();
         assertTrue(contactsPage.getTotalElements() >= contacts.size());
     }
+
+    @Test
+    public void getContactLazyAndEagerById() {
+
+
+
+        Optional<Contact> eagerContact = contactService.findContactEagerById(1L);
+
+
+
+    }
+
 
 
 }

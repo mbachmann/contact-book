@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,19 +45,20 @@ public class ContactService  {
     }
 
 
-    public Contact findContactByIdWithEagerRelationships(Long id) {
+    public Optional<Contact> findContactByIdWithEagerRelationships(Long id) {
         return contactRepository.findByIdWithEagerRelationships(id);
     }
 
     @Transactional
-    public Contact findContactById(Long id) {
-        Contact contact = contactRepository.findById(id).orElse(null);
-        if (contact != null) {
-            Hibernate.initialize(contact.getPhones());
-            Hibernate.initialize(contact.getAddresses());
-            Hibernate.initialize(contact.getEmails());
-            Hibernate.initialize(contact.getRelations());
-            Hibernate.initialize(contact.getGroups());
+    public Optional<Contact> findContactEagerById(Long id) {
+        Optional<Contact> contact= contactRepository.findById(id);
+
+        if (contact.isPresent()) {
+            Hibernate.initialize(contact.get().getPhones());
+            Hibernate.initialize(contact.get().getAddresses());
+            Hibernate.initialize(contact.get().getEmails());
+            Hibernate.initialize(contact.get().getRelations());
+            Hibernate.initialize(contact.get().getGroups());
         }
         return contact;
     }
@@ -140,4 +142,10 @@ public class ContactService  {
     public Contact findByFirstNameAndLastName(String firstName, String lastName) {
         return contactRepository.findByFirstNameAndLastName(firstName, lastName);
     }
+
+    public boolean existsById(Long id) {
+        return contactRepository.existsById(id);
+    }
+
+
 }

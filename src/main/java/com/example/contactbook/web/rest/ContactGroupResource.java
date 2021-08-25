@@ -7,11 +7,12 @@ import com.example.contactbook.web.rest.exception.BadRequestAlertException;
 import com.example.contactbook.web.rest.utils.HeaderUtil;
 import com.example.contactbook.web.rest.utils.PaginationUtil;
 import com.example.contactbook.web.rest.utils.ResponseUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.swagger.v3.oas.annotations.Parameter;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +32,6 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class ContactGroupResource implements HasLogger {
 
-    private final Logger log = LoggerFactory.getLogger(ContactGroupResource.class);
-
     private static final String ENTITY_NAME = "contactGroup";
 
     @Value("${spring.application.name}")
@@ -47,8 +46,8 @@ public class ContactGroupResource implements HasLogger {
     /**
      * {@code POST  /contact-groups} : Create a new contactGroup.
      *
-     * @param contactGroup the contactGroupDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new contactGroupDTO, or with status {@code 400 (Bad Request)} if the contactGroup has already an ID.
+     * @param contactGroup the contactGroup to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new contactGroup, or with status {@code 400 (Bad Request)} if the contactGroup has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/contact-groups")
@@ -68,11 +67,11 @@ public class ContactGroupResource implements HasLogger {
     /**
      * {@code PUT  /contact-groups/:id} : Updates an existing contactGroup.
      *
-     * @param id the id of the contactGroupDTO to save.
-     * @param contactGroup the contactGroupDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated contactGroupDTO,
-     * or with status {@code 400 (Bad Request)} if the contactGroupDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the contactGroupDTO couldn't be updated.
+     * @param id the id of the contactGroup to save.
+     * @param contactGroup the contactGroup to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated contactGroup,
+     * or with status {@code 400 (Bad Request)} if the contactGroup is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the contactGroup couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/contact-groups/{id}")
@@ -80,7 +79,7 @@ public class ContactGroupResource implements HasLogger {
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody ContactGroup contactGroup
     ) throws URISyntaxException {
-        log.debug("REST request to update ContactGroup : {}, {}", id, contactGroup);
+        getLogger().debug("REST request to update ContactGroup : {}, {}", id, contactGroup);
         if (contactGroup.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -105,9 +104,10 @@ public class ContactGroupResource implements HasLogger {
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of contactGroups in body.
      */
+    @PageableAsQueryParam
     @GetMapping("/contact-groups")
-    public ResponseEntity<List<ContactGroup>> getAllContactGroups(Pageable pageable) {
-        log.debug("REST request to get a page of ContactGroups");
+    public ResponseEntity<List<ContactGroup>> getAllContactGroups(@PageableDefault(size = 20) @Parameter(hidden = true) Pageable pageable) {
+        getLogger().debug("REST request to get a page of ContactGroups");
         Page<ContactGroup> page = contactGroupRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -116,12 +116,12 @@ public class ContactGroupResource implements HasLogger {
     /**
      * {@code GET  /contact-groups/:id} : get the "id" contactGroup.
      *
-     * @param id the id of the contactGroupDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the contactGroupDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the contactGroup to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the contactGroup, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/contact-groups/{id}")
     public ResponseEntity<ContactGroup> getContactGroup(@PathVariable Long id) {
-        log.debug("REST request to get ContactGroup : {}", id);
+        getLogger().debug("REST request to get ContactGroup : {}", id);
         Optional<ContactGroup> contactGroup = contactGroupRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(contactGroup);
     }
@@ -129,12 +129,12 @@ public class ContactGroupResource implements HasLogger {
     /**
      * {@code DELETE  /contact-groups/:id} : delete the "id" contactGroup.
      *
-     * @param id the id of the contactGroupDTO to delete.
+     * @param id the id of the contactGroup to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/contact-groups/{id}")
     public ResponseEntity<Void> deleteContactGroup(@PathVariable Long id) {
-        log.debug("REST request to delete ContactGroup : {}", id);
+        getLogger().debug("REST request to delete ContactGroup : {}", id);
         contactGroupRepository.deleteById(id);
         return ResponseEntity
             .noContent()

@@ -26,7 +26,7 @@ public class ContactResourceIT extends AbstractTest {
 
     @Test
     public void getCustomersList() throws Exception {
-        String uri = "/contacts/";
+        String uri = "/api//contacts/";
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
@@ -42,7 +42,7 @@ public class ContactResourceIT extends AbstractTest {
 
     @Test
     public void getOneCustomer() throws Exception {
-        String uri = "/contacts/1";
+        String uri = "/api/contacts/1";
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
@@ -55,7 +55,7 @@ public class ContactResourceIT extends AbstractTest {
 
     @Test
     public void postOneCustomer() throws Exception {
-        String uri = "/contacts/new";
+        String uri = "/api/contacts";
 
         Contact contact= new Contact();
         contact.setFirstName("Johannes");
@@ -70,7 +70,7 @@ public class ContactResourceIT extends AbstractTest {
                 .andReturn();
 
         int status = postMvcResult.getResponse().getStatus();
-        assertEquals(200, status);
+        assertEquals(201, status);
         String response = postMvcResult.getResponse().getContentAsString();
         Contact postCustomer = super.mapFromJson(response, Contact.class);
         assertEquals(postCustomer.getFirstName(), contact.getFirstName());
