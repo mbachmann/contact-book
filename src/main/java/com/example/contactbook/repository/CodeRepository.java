@@ -12,5 +12,4 @@ public interface CodeRepository extends JpaRepository<Code, Long> {
     List<Code> findAllByType(String type, Sort sort);
     List<Code> findAllByType(String type);
     Code findByTypeAndTitle(String type, String title);
-
 }

@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Tag(name = "Contacts")
 @RestController
 @RequestMapping("/api")
 public class ContactResource implements HasLogger {
@@ -52,9 +54,10 @@ public class ContactResource implements HasLogger {
             @Parameter(description = "comma separated list of groups, * for all, - not assigned") @RequestParam(required = false, defaultValue = "*") String groups,
             @Parameter(description = "comma separated list of relations, * for, - not assigned") @RequestParam(required = false, defaultValue = "*") String relations
     ) {
-        List<String> groupsList = groups == null ? Arrays.asList("*") : Arrays.asList(groups.split(","));;
-        List<String> relationsList  = relations == null ? Arrays.asList("*") : Arrays.asList(relations.split(","));
-        Page<ContactViewList>  page = contactService.findAllContactViewsList(pageable, filter, groupsList, relationsList);
+        List<String> groupsList = groups == null ? Arrays.asList("*") : Arrays.asList(groups.split(","));
+        ;
+        List<String> relationsList = relations == null ? Arrays.asList("*") : Arrays.asList(relations.split(","));
+        Page<ContactViewList> page = contactService.findAllContactViewsList(pageable, filter, groupsList, relationsList);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -144,15 +147,10 @@ public class ContactResource implements HasLogger {
             @ApiResponse(responseCode = "404", description = "contact not found",
                     content = @Content)})
     @GetMapping("/contacts/{id}")
-    protected ResponseEntity<Contact> findById(@Parameter(description = "id of contact to be searched") @PathVariable Long id,
-                                               @RequestParam(required = false, defaultValue = "true") boolean eagerload) {
+    protected ResponseEntity<Contact> findById(@Parameter(description = "id of contact to be searched") @PathVariable Long id) {
         getLogger().debug("REST request to get Contact : {}", id);
-        Optional<Contact> contact;
-        if (eagerload) {
-            contact = contactService.findContactByIdWithEagerRelationships(id);
-        } else {
-            contact = contactService.findContactEagerById(id);
-        }
+
+        Optional<Contact> contact = contactService.findContactByIdWithEagerRelationships(id);
         return ResponseUtil.wrapOrNotFound(contact);
     }
 

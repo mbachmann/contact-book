@@ -20,6 +20,15 @@ public class ContactGroup implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public ContactGroup () {
+    }
+
+    public ContactGroup (Long id, String name, Long usage) {
+        this.id = id;
+        this.name = name;
+        this.usage = usage;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,7 +44,7 @@ public class ContactGroup implements Serializable {
     /**
      * how many contacts are assigned to this group ,
      */
-    private Integer usage;
+    private Long usage;
 
     @ManyToMany(mappedBy = "groups")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -56,6 +65,7 @@ public class ContactGroup implements Serializable {
         return this;
     }
 
+
     public String getName() {
         return this.name;
     }
@@ -69,16 +79,16 @@ public class ContactGroup implements Serializable {
         this.name = name;
     }
 
-    public Integer getUsage() {
+    public Long getUsage() {
         return this.usage;
     }
 
-    public ContactGroup usage(Integer usage) {
+    public ContactGroup usage(Long usage) {
         this.usage = usage;
         return this;
     }
 
-    public void setUsage(Integer usage) {
+    public void setUsage(Long usage) {
         this.usage = usage;
     }
 

@@ -2,16 +2,22 @@ package com.example.contactbook.model.projection;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import javax.persistence.Lob;
 import java.time.LocalDate;
 
 public interface ContactViewList {
     // @Value("#{target.id}")
+    @Schema(description = "The id of the contact")
     Long getId();
+    @Schema(description = "The first name of the contact")
     String getFirstName();
+    @Schema(description = "The last or surname name of the contact")
     String getLastName();
+    @Schema(description = "The company of the contact")
     String getCompany();
-    @Schema(description = "company name, lastname, firstname", type = "string")
+    @Schema(description = "Aggregated information: company name, lastname, firstname", type = "string")
     String getName();
     @Schema(description = "The birth date of the contact", type = "string", format = "date")
     LocalDate getBirthDate();

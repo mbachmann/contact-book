@@ -8,6 +8,7 @@ import com.example.contactbook.web.rest.utils.HeaderUtil;
 import com.example.contactbook.web.rest.utils.PaginationUtil;
 import com.example.contactbook.web.rest.utils.ResponseUtil;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,7 @@ import java.util.Optional;
 /**
  * REST controller for managing {@link com.example.contactbook.model.ContactGroup}.
  */
+@Tag(name = "Configurations")
 @RestController
 @RequestMapping("/api")
 public class ContactGroupResource implements HasLogger {
@@ -108,7 +110,7 @@ public class ContactGroupResource implements HasLogger {
     @GetMapping("/contact-groups")
     public ResponseEntity<List<ContactGroup>> getAllContactGroups(@PageableDefault(size = 20) @Parameter(hidden = true) Pageable pageable) {
         getLogger().debug("REST request to get a page of ContactGroups");
-        Page<ContactGroup> page = contactGroupRepository.findAll(pageable);
+        Page<ContactGroup> page = contactGroupRepository.findAllContactGroupsWithUsages(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

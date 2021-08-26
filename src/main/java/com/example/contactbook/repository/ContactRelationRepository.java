@@ -3,9 +3,13 @@ package com.example.contactbook.repository;
 import com.example.contactbook.model.ContactGroup;
 import com.example.contactbook.model.ContactRelation;
 import com.example.contactbook.model.enums.ContactRelationType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * Spring Data SQL repository for the ContactRelation entity.
@@ -16,4 +20,8 @@ public interface ContactRelationRepository extends JpaRepository<ContactRelation
 
     @Query("Select distinct c FROM ContactRelation c left join fetch c.contacts where c.contactRelationType = :contactRelationType" )
     ContactRelation findContactRelationByContactRelationType(ContactRelationType contactRelationType);
+
+    @Query("Select distinct new com.example.contactbook.model.ContactRelation(cr.id, cr.contactRelationType, count(co)) FROM ContactRelation cr left join cr.contacts as co GROUP BY cr.id, cr.contactRelationType " )
+    Page<ContactRelation> findAllContactRelationsWithUsages(Pageable pageable);
+
 }

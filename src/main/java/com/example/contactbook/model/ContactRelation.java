@@ -17,6 +17,14 @@ public class ContactRelation implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public ContactRelation () {}
+
+    public ContactRelation (Long id, ContactRelationType contactRelationType, Long usage) {
+        this.id = id;
+        this.setContactRelationType(contactRelationType);
+        this.usage = usage;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,7 +36,16 @@ public class ContactRelation implements Serializable {
     @Column(name = "contact_relation_type")
     private ContactRelationType contactRelationType;
 
+    /**
+     * for search purposes... the enumeration is also available as a string
+     */
     private String contactRelationValue;
+
+    /**
+     * how many contacts are assigned to this relation ,
+     */
+    private Long usage;
+
 
     @ManyToMany(mappedBy = "relations")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -96,6 +113,14 @@ public class ContactRelation implements Serializable {
             contacts.forEach(i -> i.addRelation(this));
         }
         this.contacts = contacts;
+    }
+
+    public Long getUsage() {
+        return usage;
+    }
+
+    public void setUsage(Long usage) {
+        this.usage = usage;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
