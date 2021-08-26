@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Spring Data SQL repository for the ContactGroup entity.
@@ -21,4 +22,7 @@ public interface ContactGroupRepository extends JpaRepository<ContactGroup, Long
 
     @Query("Select distinct new com.example.contactbook.model.ContactGroup(cg.id, cg.name, count(co)) FROM ContactGroup cg left join cg.contacts as co GROUP BY cg.id, cg.name " )
     Page<ContactGroup> findAllContactGroupsWithUsages(Pageable pageable);
+
+    @Query("Select distinct new com.example.contactbook.model.ContactGroup(cg.id, cg.name, count(co)) FROM ContactGroup cg left join cg.contacts as co where cg.id = :id GROUP BY cg.id, cg.name ")
+    Optional<ContactGroup> findContactGroupById(long id);
 }

@@ -12,14 +12,12 @@ import com.example.contactbook.repository.ContactGroupRepository;
 import com.example.contactbook.repository.ContactRelationRepository;
 import com.example.contactbook.service.ContactService;
 import com.example.contactbook.utils.HasLogger;
-import com.example.contactbook.utils.ImageProcessing;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.example.contactbook.utils.ImageProcessingService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -27,6 +25,9 @@ public class DatabaseBootstrap implements InitializingBean, HasLogger {
 
     @Autowired
     ContactService contactService;
+
+    @Autowired
+    ImageProcessingService imageProcessingService;
 
     @Autowired
     CodeRepository codeRepository;
@@ -90,27 +91,24 @@ public class DatabaseBootstrap implements InitializingBean, HasLogger {
         }
     }
 
-    private void createFirstContact() throws IOException {
+    private void createFirstContact() throws IOException, URISyntaxException {
         if (contactService.findByFirstNameAndLastName("Anna", "Muster") == null) {
             Contact contact = new Contact();
             contact.setFirstName("Anna");
             contact.setLastName("Muster");
-            //contact.setMiddleName("Marta");
             contact.setBirthDate(LocalDate.of(2000, 12,12));
-            //contact.setCompany("");
             contact.setNotes("First Contact");
 
             // Todo Uncomment
-            contact.setPhoto(readImageFromResource("image/firstContact.png"));
+            contact.setPhoto(imageProcessingService.getBytesFromResource(getClass(), "image/firstContact.png"));
             contact.setPhotoContentType("image/png");
-            contact.setThumbNail(ImageProcessing.createThumbnail(contact.getPhoto(), 32, contact.getPhotoContentType()).toByteArray());
+            contact.setThumbNail(imageProcessingService.createThumbnail(contact.getPhoto(), 32, contact.getPhotoContentType()).toByteArray());
 
             Address address = new Address();
             address.setCity("Basel");
             address.setCountry("Schweiz");
             address.setPostalCode("4000");
             address.setStreet("Peter-Merian 42");
-            //AddressType addressType = (AddressType)codeRepository.findByTypeAndTitle("AddressType","School");
             AddressType addressType = (AddressType)codeRepository.findByTypeAndTitle(CodeType.AddressType.getValue(),"School");
             address.setAddressType(addressType);
             address.setDefaultAddress(true);
@@ -131,8 +129,9 @@ public class DatabaseBootstrap implements InitializingBean, HasLogger {
         if (contactService.findByFirstNameAndLastName("Felix", "Muster") == null) {
             Contact contact = new Contact("Felix", "Muster", "Franz", LocalDate.of(1990, 1,8), "Great Company Ltd", "Second Contact");
             // Todo Uncomment
-            // contact.setPhoto(readImageFromResource("image/secondContact.png"));
+            // contact.setPhoto(imageProcessingService.getBytesFromResource(getClass(), "image/secondContact.png"));
             // contact.setPhotoContentType("image/png");
+            // contact.setThumbNail(imageProcessingService.createThumbnail(contact.getPhoto(), 32, contact.getPhotoContentType()).toByteArray());
 
             ContactRelation relation = contactRelationRepository.findContactRelationByContactRelationType(ContactRelationType.CREDITOR);
             relation.addContacts(contact);
@@ -152,7 +151,9 @@ public class DatabaseBootstrap implements InitializingBean, HasLogger {
             Contact contact = new Contact("Max", "Mustermann", "Fritz", LocalDate.of(1980, 2,8), "Example Company Ltd", "Thrid Contact");
 
             // Todo Uncomment
-            // contact.setPhoto(readImageFromResource("image/secondContact.png"));
+            // contact.setPhoto(imageProcessingService.getBytesFromResource(getClass(), "image/secondContact.png"));
+            // contact.setPhotoContentType("image/png");
+            // contact.setThumbNail(imageProcessingService.createThumbnail(contact.getPhoto(), 32, contact.getPhotoContentType()).toByteArray());
 
             AddressType addressType = (AddressType)codeRepository.findByTypeAndTitle(CodeType.AddressType.getValue(),"Home");
             Address address = new Address("Aeschengraben", "8000", "Zürich", "CH", true, addressType);
@@ -162,6 +163,10 @@ public class DatabaseBootstrap implements InitializingBean, HasLogger {
             address = new Address("Bahnhofstrasse", "5000", "Aarau", "CH", true, addressType);
             contact.addAddress(address);
 
+            addressType = (AddressType)codeRepository.findByTypeAndTitle(CodeType.AddressType.getValue(),"School");
+            address = new Address("Lagerstrasse", "8004", "Zürich", "CH", true, addressType);
+            contact.addAddress(address);
+
 
             PhoneType phoneType = (PhoneType)codeRepository.findByTypeAndTitle(CodeType.PhoneType.getValue(),"Home");
             Phone phone = new Phone("+41 61 812 34 56", phoneType);
@@ -169,7 +174,6 @@ public class DatabaseBootstrap implements InitializingBean, HasLogger {
 
             phone = new Phone();
             phone.setNumber("+41 62 546 12 56");
-            // PhoneType phoneType = (PhoneType)codeRepository.findByTypeAndTitle("PhoneType","Home");
             phoneType = (PhoneType)codeRepository.findByTypeAndTitle(CodeType.PhoneType.getValue(),"Business");
             phone.setPhoneType(phoneType);
             contact.getPhones().add(phone);
@@ -204,8 +208,9 @@ public class DatabaseBootstrap implements InitializingBean, HasLogger {
             Contact contact = new Contact("John", "Doe", "Jack", LocalDate.of(1991, 2,9), "John Doe Company Ltd", "Forth Contact");
 
             // Todo Uncomment
-            // contact.setPhoto(readImageFromResource("image/secondContact.png"));
+            // contact.setPhoto(imageProcessingService.getBytesFromResource(getClass(), "image/secondContact.png"));
             // contact.setPhotoContentType("image/png");
+            // contact.setThumbNail(imageProcessingService.createThumbnail(contact.getPhoto(), 32, contact.getPhotoContentType()).toByteArray());
             ContactRelation relation = contactRelationRepository.findContactRelationByContactRelationType(ContactRelationType.CREDITOR);
             relation.addContacts(contact);
 
@@ -225,19 +230,14 @@ public class DatabaseBootstrap implements InitializingBean, HasLogger {
             Contact contact = new Contact("Laurent", "Mathis", "Jean", LocalDate.of(1989, 4, 10), null, "Fifth Contact");
 
             // Todo Uncomment
-            // contact.setPhoto(readImageFromResource("image/secondContact.png"));
+            // contact.setPhoto(imageProcessingService.getBytesFromResource(getClass(), "image/secondContact.png"));
             // contact.setPhotoContentType("image/png");
+            // contact.setThumbNail(imageProcessingService.createThumbnail(contact.getPhoto(), 32, contact.getPhotoContentType()).toByteArray());
             ContactRelation relation = contactRelationRepository.findContactRelationByContactRelationType(ContactRelationType.CREDITOR);
             relation.addContacts(contact);
 
             contactService.save(contact);
             getLogger().info(contact.getFirstName() + " " + contact.getLastName() + " created");
         }
-    }
-    private byte[] readImageFromResource(String imageResourceFile) throws IOException {
-        ClassPathResource backImgFile = new ClassPathResource(imageResourceFile);
-        byte[] image = new byte[(int) backImgFile.contentLength()];
-        backImgFile.getInputStream().read(image);
-        return image;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.contactbook.domain;
 
+import com.example.contactbook.AbstractTest;
 import com.example.contactbook.TestUtil;
 import com.example.contactbook.model.Address;
 import com.example.contactbook.model.Contact;
@@ -8,8 +9,10 @@ import com.example.contactbook.model.Phone;
 import com.example.contactbook.model.codes.AddressType;
 import com.example.contactbook.model.codes.EmailType;
 import com.example.contactbook.model.codes.PhoneType;
-import com.example.contactbook.utils.ImageProcessing;
+
+import com.example.contactbook.utils.ImageProcessingService;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -17,7 +20,10 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class ContactTest {
+class ContactTest extends AbstractTest {
+
+    @Autowired
+    ImageProcessingService imageProcessingService;
 
     @Test
     void equalsVerifier() throws Exception {
@@ -43,9 +49,9 @@ class ContactTest {
         contact.setCompany("Example Company Ltd");
         contact.setNotes("First Contact");
 
-        contact.setPhoto(TestUtil.readImageFromResource("image/firstContact.png"));
+        contact.setPhoto(imageProcessingService.getBytesFromResource(getClass(),"image/firstContact.png"));
         contact.setPhotoContentType("image/png");
-        contact.setThumbNail(ImageProcessing.createThumbnail(contact.getPhoto(), 32, contact.getPhotoContentType()).toByteArray());
+        contact.setThumbNail(imageProcessingService.createThumbnail(contact.getPhoto(), 32, contact.getPhotoContentType()).toByteArray());
         String temp =  "Contact(id=null, firstName=Anna, middleName=Marta, lastName=Muster, company=Example Company Ltd, birthDate=2000-12-12, notes=First Contact, photoContentType=image/png, phonesAggregate=null, addressesAggregate=null, emailsAggregate=null, addresses=[], phones=[], emails=[])";
         assertThat(temp).isEqualTo(contact.toString());
 

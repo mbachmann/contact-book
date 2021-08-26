@@ -124,7 +124,7 @@ public class ContactRelationResource implements HasLogger {
     @GetMapping("/contact-relations/{id}")
     public ResponseEntity<ContactRelation> getContactRelation(@PathVariable Long id) {
         getLogger().debug("REST request to get ContactRelation : {}", id);
-        Optional<ContactRelation> contactRelation = contactRelationRepository.findById(id);
+        Optional<ContactRelation> contactRelation = contactRelationRepository.findContactRelationById(id);
         return ResponseUtil.wrapOrNotFound(contactRelation);
     }
 

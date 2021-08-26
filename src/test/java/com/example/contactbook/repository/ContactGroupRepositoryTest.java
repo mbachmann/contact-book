@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -44,10 +45,20 @@ public class ContactGroupRepositoryTest extends AbstractTest {
     }
 
     @Test
-    public void getContactGroupWithUsage() throws Exception {
+    public void getContactGroupsWithUsage() throws Exception {
         Pageable sortedByName = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, "name"));
         Page<ContactGroup> contactGroup = contactGroupRepository.findAllContactGroupsWithUsages(sortedByName);
         assertTrue(contactGroup.getContent().size() > 0);
         contactGroup.forEach(group -> getLogger().info(group.toString()));
+    }
+
+    @Test
+    public void getContactGroupWithUsage() throws Exception {
+        long id = 1L;
+        Optional<ContactGroup> contactGroupOptional = contactGroupRepository.findContactGroupById(id);
+        contactGroupOptional.ifPresent(contactGroup -> {
+            assertEquals(contactGroup.getId(), id);
+            getLogger().debug(contactGroup.toString());
+        });
     }
 }

@@ -82,7 +82,7 @@ public interface ContactRepository extends JpaRepository<Contact, Long>, Queryds
                     "left join fetch c.addresses left join fetch c.emails left join fetch c.phones left join fetch c.groups left join fetch c.relations",
             countQuery = "select count(distinct contact) from Contact contact"
     )
-    Page<Contact> findAllWithEagerRelationships(Pageable page);
+    List<Contact> findAllWithEagerRelationships(Pageable page);
 
     /**
      * **** DO NOT USE THIS QUERY ****
@@ -106,6 +106,29 @@ public interface ContactRepository extends JpaRepository<Contact, Long>, Queryds
                     "OR (EXISTS (SELECT 1 FROM c.phones ph WHERE COALESCE(ph.number,'') LIKE %:filter%) ) "
     )
     List<Contact> findAllWithEagerRelationships(Pageable pageable, @Param("filter") String filter);
+
+    /**
+     * **** DO NOT USE THIS QUERY ****
+     * Query with Eager Relations. The query might produce duplicates due to cartesian product. The query is inefficient. The countQuery will return the count of all contacts and not only the filtered
+     *
+     * @param pageable the paging and sorting information
+     * @param filter   the filter string
+     * @return Contact information within a Page Object (total might be wrong - higher than with filter)
+     */
+    @Query(
+            value = "SELECT distinct c, CONCAT(c.lastName, ', ', c.firstName) AS name from Contact c  " +
+                    "left join  c.addresses as a  left join  c.emails as e left join  c.phones as p left join  c.groups as g left join  c.relations as r " +
+                    "WHERE (CONCAT(COALESCE(c.firstName,''), ' ', COALESCE(c.lastName,''), ' ', COALESCE(c.company,'') , ' ', COALESCE(c.middleName,''), ' ', COALESCE(c.birthDate,'')) LIKE %:filter%) " +
+                    "OR (EXISTS (SELECT 1 FROM c.addresses ad WHERE (CONCAT(COALESCE(ad.city,''), ' ', COALESCE(ad.street,''), ' ', COALESCE(ad.postalCode,''), ' ', COALESCE(ad.country,'')) LIKE %:filter%) ) )" +
+                    "OR (EXISTS (SELECT 1 FROM c.emails em WHERE COALESCE(em.address,'') LIKE %:filter%) ) " +
+                    "OR (EXISTS (SELECT 1 FROM c.phones ph WHERE COALESCE(ph.number,'') LIKE %:filter%) ) ",
+            countQuery = "select count(distinct c) from Contact c " +
+                    "WHERE (CONCAT(COALESCE(c.firstName,''), ' ', COALESCE(c.lastName,''), ' ', COALESCE(c.company,'') , ' ', COALESCE(c.middleName,''), ' ', COALESCE(c.birthDate,'')) LIKE %:filter%) " +
+                    "OR (EXISTS (SELECT 1 FROM c.addresses ad WHERE (CONCAT(COALESCE(ad.city,''), ' ', COALESCE(ad.street,''), ' ', COALESCE(ad.postalCode,''), ' ', COALESCE(ad.country,'')) LIKE %:filter%) ) )" +
+                    "OR (EXISTS (SELECT 1 FROM c.emails em WHERE COALESCE(em.address,'') LIKE %:filter%) ) " +
+                    "OR (EXISTS (SELECT 1 FROM c.phones ph WHERE COALESCE(ph.number,'') LIKE %:filter%) ) "
+    )
+    List<Contact> findAllWithFilter(Pageable pageable, @Param("filter") String filter);
 
     @Query("SELECT count(distinct c) from Contact c " +
             "WHERE (CONCAT(COALESCE(c.firstName,''), ' ', COALESCE(c.lastName,''), ' ', COALESCE(c.company,'') , ' ', COALESCE(c.middleName,''), ' ', COALESCE(c.birthDate,'')) LIKE %:filter%) " +

@@ -124,7 +124,7 @@ public class ContactGroupResource implements HasLogger {
     @GetMapping("/contact-groups/{id}")
     public ResponseEntity<ContactGroup> getContactGroup(@PathVariable Long id) {
         getLogger().debug("REST request to get ContactGroup : {}", id);
-        Optional<ContactGroup> contactGroup = contactGroupRepository.findById(id);
+        Optional<ContactGroup> contactGroup = contactGroupRepository.findContactGroupById(id);
         return ResponseUtil.wrapOrNotFound(contactGroup);
     }
 

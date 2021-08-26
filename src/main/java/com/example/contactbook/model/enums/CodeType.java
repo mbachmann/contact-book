@@ -5,7 +5,7 @@ public enum CodeType {
     EmailType("EmailType"),
     PhoneType("PhoneType"),
     AddressType("AddressType"),
-    CODE("CodeType");
+    AllCodes("CodeType");
 
     private final String value;
 

@@ -2,6 +2,7 @@ package com.example.contactbook.model.codes;
 
 import com.example.contactbook.model.Contact;
 import com.example.contactbook.model.enums.CodeType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
@@ -14,11 +15,28 @@ import javax.persistence.*;
         @UniqueConstraint(columnNames = {"type", "shortCut"})
 })
 public class Code {
+
+    public Code(String title, String shortCut) {
+        this.title = title;
+        this.shortCut = shortCut;
+        this.active = true;
+        this.usage = 0L;
+    }
+
+    public Code(long id, String title, String shortCut, Boolean active, Long usage) {
+        this.id = id;
+        this.title = title;
+        this.shortCut = shortCut;
+        this.active = active;
+        this.usage = usage;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", updatable = false, nullable = false)
     protected Long id;
 
+    @JsonIgnore
     @Column(name = "type", insertable = false, updatable = false)
     protected String type;
 
@@ -31,16 +49,12 @@ public class Code {
     @Column(nullable = false)
     protected Boolean active = true;
 
-    @Version
-    private int version;
+    @Column(nullable = true)
+    protected Long usage;
 
     public Code() {
     }
 
-    public Code(String title, String shortCut) {
-        this.title = title;
-        this.shortCut = shortCut;
-    }
 
     public Long getId() {
         return id;
@@ -74,12 +88,20 @@ public class Code {
         this.active = active;
     }
 
-    public int getVersion() {
-        return version;
+    public String getType() {
+        return type;
     }
 
-    public void setVersion(int version) {
-        this.version = version;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Long getUsage() {
+        return usage;
+    }
+
+    public void setUsage(Long usage) {
+        this.usage = usage;
     }
 
     @Override

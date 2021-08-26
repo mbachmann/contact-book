@@ -34,9 +34,9 @@ Find application.yml in resources folder and edit configuration in this file.
 
     contacts:       {host:port}/contacts
     contact by id:  {host:port}/contacts/{id}
-    new contact:   {host:port}/contacts/new
-    edit contact:   {host:port}/contacts/edit/{id}
-    delete contact: {host:port}/contacts/{id}/delete
+    new contact:   {host:port}/contacts
+    edit contact:   {host:port}/contacts/{id}
+    delete contact: {host:port}/contacts/{id}
 
 ## JSON
 
@@ -45,6 +45,11 @@ Data folder contains a sample JSON-file to save contact.
 ##  Create a Docker Container, Run and Publish to Docker
 
 Create first a jar with the build instruction. To create a container. Replace **uportal** with your **dockerhub id**.
+
+```
+$  mvn clean package
+$  java -jar target/*.jar
+```
 
 <br/>
 

@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -48,10 +49,20 @@ public class ContactGroupRelationTest extends AbstractTest {
     }
 
     @Test
-    public void getContactRelationWithUsage() throws Exception {
+    public void getContactRelationsWithUsage() throws Exception {
         Pageable sortedByContactRelationType = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, "contactRelationType"));
-        Page<ContactRelation> contactGroups = contactRelationRepository.findAllContactRelationsWithUsages(sortedByContactRelationType);
-        assertTrue(contactGroups.getContent().size() > 0);
-        contactGroups.getContent().forEach(group -> getLogger().info(group.toString()));
+        Page<ContactRelation> contactRelations = contactRelationRepository.findAllContactRelationsWithUsages(sortedByContactRelationType);
+        assertTrue(contactRelations.getContent().size() > 0);
+        contactRelations.getContent().forEach(group -> getLogger().info(group.toString()));
+    }
+
+    @Test
+    public void getContactRelationWithUsage() throws Exception {
+        long id = 1L;
+        Optional<ContactRelation> contactRelationOptional = contactRelationRepository.findContactRelationById(id);
+        contactRelationOptional.ifPresent(contactRelation -> {
+            assertEquals(contactRelation.getId(), id);
+            getLogger().debug(contactRelation.toString());
+        });
     }
 }

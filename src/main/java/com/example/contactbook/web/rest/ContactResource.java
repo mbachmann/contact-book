@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -55,7 +56,6 @@ public class ContactResource implements HasLogger {
             @Parameter(description = "comma separated list of relations, * for, - not assigned") @RequestParam(required = false, defaultValue = "*") String relations
     ) {
         List<String> groupsList = groups == null ? Arrays.asList("*") : Arrays.asList(groups.split(","));
-        ;
         List<String> relationsList = relations == null ? Arrays.asList("*") : Arrays.asList(relations.split(","));
         Page<ContactViewList> page = contactService.findAllContactViewsList(pageable, filter, groupsList, relationsList);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -68,14 +68,19 @@ public class ContactResource implements HasLogger {
      * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of contacts in body.
      */
+    @PageableAsQueryParam
     @GetMapping("/contacts")
-    protected ResponseEntity<List<Contact>> findAll(Pageable pageable, @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
+    protected ResponseEntity<List<Contact>> findAll(
+            @PageableDefault(size = 20, sort = {"company", "lastName", "firstName"}, direction = Sort.Direction.ASC) @Parameter(hidden = true) Pageable pageable,
+            @Parameter(description = "full text filter") @RequestParam(required = false) String filter,
+            @RequestParam(required = false, defaultValue = "false") boolean eagerload
+    ) {
         getLogger().debug("REST request to get a page of Contact");
         Page<Contact> page;
         if (eagerload) {
-            page = contactService.findAllContactsWithEagerRelationships(pageable);
+            page = contactService.findAllContactsWithEagerRelationships(pageable, filter);
         } else {
-            page = contactService.findAll(pageable);
+            page = contactService.findAll(pageable, filter);
         }
 
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);

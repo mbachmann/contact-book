@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Spring Data SQL repository for the ContactRelation entity.
@@ -23,5 +24,8 @@ public interface ContactRelationRepository extends JpaRepository<ContactRelation
 
     @Query("Select distinct new com.example.contactbook.model.ContactRelation(cr.id, cr.contactRelationType, count(co)) FROM ContactRelation cr left join cr.contacts as co GROUP BY cr.id, cr.contactRelationType " )
     Page<ContactRelation> findAllContactRelationsWithUsages(Pageable pageable);
+
+    @Query("Select distinct new com.example.contactbook.model.ContactRelation(cr.id, cr.contactRelationType, count(co)) FROM ContactRelation cr left join cr.contacts as co where cr.id = :id GROUP BY cr.id, cr.contactRelationType " )
+    Optional<ContactRelation> findContactRelationById(long id);
 
 }

@@ -1,5 +1,6 @@
 package com.example.contactbook.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.LazyCollection;
@@ -49,15 +50,15 @@ public class Contact  {
 
     private String notes;
 
-    @JsonIgnoreProperties
+    @JsonIgnore
     private String phonesAggregate;
-    @JsonIgnoreProperties
+    @JsonIgnore
     private String addressesAggregate;
-    @JsonIgnoreProperties
+    @JsonIgnore
     private String emailsAggregate;
-    @JsonIgnoreProperties
+    @JsonIgnore
     private String groupsIdAggregate;
-    @JsonIgnoreProperties
+    @JsonIgnore
     private String relationsIdAggregate;
 
 
@@ -235,6 +236,22 @@ public class Contact  {
 
     public void setEmailsAggregate(String emailsAggregate) {
         this.emailsAggregate = emailsAggregate;
+    }
+
+    public String getGroupsIdAggregate() {
+        return groupsIdAggregate;
+    }
+
+    public void setGroupsIdAggregate(String groupsIdAggregate) {
+        this.groupsIdAggregate = groupsIdAggregate;
+    }
+
+    public String getRelationsIdAggregate() {
+        return relationsIdAggregate;
+    }
+
+    public void setRelationsIdAggregate(String relationsIdAggregate) {
+        this.relationsIdAggregate = relationsIdAggregate;
     }
 
     public Set<ContactRelation> getRelations() {

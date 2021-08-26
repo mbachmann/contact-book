@@ -82,8 +82,30 @@ public class ContactService  {
         return contactRepository.findAll(Sort.by(Sort.Direction.ASC, "lastName", "firstName"));
     }
 
+    public List<Contact> findAll(Sort sort) {
+        return contactRepository.findAll(sort);
+    }
+
+
     public Page<Contact> findAll(Pageable pageable) {
         return contactRepository.findAll(pageable);
+    }
+
+
+    public Page<Contact> findAll(Pageable pageable, String filter) {
+
+        if (filter == null) {
+            return findAll(pageable);
+        } else {
+            List<Contact> contactListWithDuplicates = contactRepository.findAllWithFilter(pageable, filter);
+            List<Contact> contacts = contactListWithDuplicates.stream()
+                    .distinct()
+                    .collect(Collectors.toList());
+            int totalSize = contacts.size();
+            return createPage(contacts, pageable, totalSize);
+        }
+
+
     }
 
     public List<ContactView> findAllContactViews() {
@@ -114,7 +136,12 @@ public class ContactService  {
     }
 
     public Page<Contact> findAllContactsWithEagerRelationships(Pageable pageable) {
-        return contactRepository.findAllWithEagerRelationships(pageable);
+        List<Contact> contactListWithDuplicates = contactRepository.findAllWithEagerRelationships(pageable);
+        List<Contact> contacts = contactListWithDuplicates.stream()
+                .distinct()
+                .collect(Collectors.toList());
+        int totalSize = contacts.size();
+        return createPage(contacts, pageable, totalSize);
     }
 
     public Page<Contact> findAllContactsWithEagerRelationships(Pageable pageable, String filter) {

@@ -205,10 +205,4 @@ public final class TestUtil {
 
     private TestUtil() {}
 
-    public static byte[] readImageFromResource(String imageResourceFile) throws IOException {
-        ClassPathResource backImgFile = new ClassPathResource(imageResourceFile);
-        byte[] image = new byte[(int) backImgFile.contentLength()];
-        backImgFile.getInputStream().read(image);
-        return image;
-    }
 }
