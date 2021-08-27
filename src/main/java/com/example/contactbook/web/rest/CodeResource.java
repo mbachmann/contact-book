@@ -1,11 +1,8 @@
 package com.example.contactbook.web.rest;
 
-import com.example.contactbook.model.codes.AddressType;
 import com.example.contactbook.model.codes.Code;
-import com.example.contactbook.model.codes.EmailType;
-import com.example.contactbook.model.codes.PhoneType;
 import com.example.contactbook.model.enums.CodeType;
-import com.example.contactbook.repository.CodeRepository;
+import com.example.contactbook.service.CodeService;
 import com.example.contactbook.utils.HasLogger;
 import com.example.contactbook.web.rest.exception.BadRequestAlertException;
 import com.example.contactbook.web.rest.utils.HeaderUtil;
@@ -38,7 +35,7 @@ import java.util.Optional;
 public class CodeResource implements HasLogger {
 
     @Autowired
-    CodeRepository codeRepository;
+    CodeService codeService;
 
     private static final String ENTITY_NAME = "code";
 
@@ -58,15 +55,8 @@ public class CodeResource implements HasLogger {
             @PageableDefault(size = 20, sort = {"shortCut", "title"}, direction = Sort.Direction.ASC) @Parameter(hidden = true) Pageable pageable) {
 
         getLogger().debug("REST request to get a page of Codes");
-        Page<Code> page;
 
-        switch (codeType) {
-            case AddressType:   page = codeRepository.findAllAddressType(pageable);     break;
-            case EmailType:     page = codeRepository.findAllEmailType(pageable);       break;
-            case PhoneType:     page = codeRepository.findAllPhoneType(pageable);       break;
-            case AllCodes:      page = codeRepository.findAll(pageable);                break;
-            default:            page = codeRepository.findAllByType(codeType.getValue(), pageable);
-        }
+        Page<Code> page = codeService.findAllCodesByType(codeType, pageable);
 
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -80,16 +70,8 @@ public class CodeResource implements HasLogger {
      */
     @GetMapping("/codes/{id}")
     public ResponseEntity<Code> getCode(@PathVariable Long id) {
-        getLogger().debug("REST request to get Code : {}", id);
-        Optional<Code> codeOptional = codeRepository.findById(id);
-        if (codeOptional.isPresent()) {
-            CodeType codeType = CodeType.valueOf(codeOptional.get().getType());
-            switch (codeType) {
-                case AddressType: codeOptional = codeRepository.findAddressTypeById(id); break;
-                case EmailType: codeOptional = codeRepository.findEmailTypeById(id); break;
-                case PhoneType: codeOptional = codeRepository.findPhoneTypeById(id); break;
-            }
-        }
+       getLogger().debug("REST request to get Code : {}", id);
+       Optional<Code> codeOptional = codeService.findByIdWithUsage(id);
        return ResponseUtil.wrapOrNotFound(codeOptional);
     }
 
@@ -142,10 +124,10 @@ public class CodeResource implements HasLogger {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!codeRepository.existsById(id)) {
+        if (!codeService.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        Optional<Code> codeOptional = codeRepository.findById(id);
+        Optional<Code> codeOptional = codeService.findById(id);
         Code result = null;
         if (codeOptional.isPresent()) {
             CodeType codeType = CodeType.valueOf(codeOptional.get().getType());
@@ -166,36 +148,22 @@ public class CodeResource implements HasLogger {
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/codes/{id}")
-    public ResponseEntity<Void> deleteCode(@PathVariable Long id) {
+    public ResponseEntity<Boolean> deleteCode(@PathVariable Long id) {
         getLogger().debug("REST request to delete Code : {}", id);
-        codeRepository.deleteById(id);
+        Boolean result = codeService.deleteById(id);
         return ResponseEntity
-                .noContent()
+                .ok()
                 .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
-                .build();
+                .body(result);
     }
 
     private Code update (CodeType codeType, Code code) {
-        Code result;
-        switch (codeType) {
-            case AddressType:   result = codeRepository.save(new AddressType(code.getId(), code.getTitle(), code.getShortCut(), code.getActive(), code.getUsage()));   break;
-            case EmailType:     result = codeRepository.save(new EmailType(code.getId(), code.getTitle(), code.getShortCut(), code.getActive(), code.getUsage()));     break;
-            case PhoneType:     result = codeRepository.save(new PhoneType(code.getId(), code.getTitle(), code.getShortCut(), code.getActive(), code.getUsage()));     break;
-            default:            result = codeRepository.save(code);
-        }
-        return result;
+        return codeService.update(codeType, code);
 
     }
 
     private Code save (CodeType codeType, Code code) {
-        Code result;
-        switch (codeType) {
-            case AddressType:   result = codeRepository.save(new AddressType(code.getTitle(), code.getShortCut()));   break;
-            case EmailType:     result = codeRepository.save(new EmailType(code.getTitle(), code.getShortCut()));     break;
-            case PhoneType:     result = codeRepository.save(new PhoneType(code.getTitle(), code.getShortCut()));     break;
-            default:            result = codeRepository.save(code);
-        }
-        return result;
+        return codeService.save(codeType, code);
 
     }
 

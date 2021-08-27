@@ -86,7 +86,6 @@ public class ContactService  {
         return contactRepository.findAll(sort);
     }
 
-
     public Page<Contact> findAll(Pageable pageable) {
         return contactRepository.findAll(pageable);
     }

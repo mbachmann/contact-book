@@ -65,7 +65,7 @@ public class CodeServiceTest extends AbstractTest {
         List<Code> codesAfterUpdate = codeService.findAllCodesByType(CodeType.PhoneType);
         assertEquals(size + 1, codesAfterUpdate.size());
 
-        assertTrue(codeService.deleteCodeById(phoneTypeSaved.getId()));
+        assertTrue(codeService.deleteById(phoneTypeSaved.getId()));
         assertEquals(size, codeService.findAllCodesByType(CodeType.PhoneType).size());
     }
 

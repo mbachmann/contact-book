@@ -74,5 +74,7 @@ public class ContactResourceIT extends AbstractTest {
         String response = postMvcResult.getResponse().getContentAsString();
         Contact postCustomer = super.mapFromJson(response, Contact.class);
         assertEquals(postCustomer.getFirstName(), contact.getFirstName());
+
+
     }
 }
