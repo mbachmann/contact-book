@@ -1,7 +1,5 @@
 package com.example.contactbook.model.codes;
 
-import com.example.contactbook.model.Contact;
-import com.example.contactbook.model.enums.CodeType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -20,7 +18,7 @@ public class Code {
         this.title = title;
         this.shortCut = shortCut;
         this.active = true;
-        this.usage = 0L;
+        this._usage = 0L;
     }
 
     public Code(long id, String title, String shortCut, Boolean active, Long usage) {
@@ -28,7 +26,7 @@ public class Code {
         this.title = title;
         this.shortCut = shortCut;
         this.active = active;
-        this.usage = usage;
+        this._usage = usage;
     }
 
     @Id
@@ -50,7 +48,7 @@ public class Code {
     protected Boolean active = true;
 
     @Column(nullable = true)
-    protected Long usage;
+    protected Long _usage;
 
     public Code() {
     }
@@ -97,11 +95,11 @@ public class Code {
     }
 
     public Long getUsage() {
-        return usage;
+        return _usage;
     }
 
-    public void setUsage(Long usage) {
-        this.usage = usage;
+    public void setUsage(Long _usage) {
+        this._usage = _usage;
     }
 
     @Override

@@ -26,7 +26,7 @@ public class ContactGroup implements Serializable {
     public ContactGroup (Long id, String name, Long usage) {
         this.id = id;
         this.name = name;
-        this.usage = usage;
+        this._usage = usage;
     }
 
     @Id
@@ -44,7 +44,7 @@ public class ContactGroup implements Serializable {
     /**
      * how many contacts are assigned to this group ,
      */
-    private Long usage;
+    private Long _usage;
 
     @ManyToMany(mappedBy = "groups")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -80,16 +80,16 @@ public class ContactGroup implements Serializable {
     }
 
     public Long getUsage() {
-        return this.usage;
+        return this._usage;
     }
 
     public ContactGroup usage(Long usage) {
-        this.usage = usage;
+        this._usage = usage;
         return this;
     }
 
     public void setUsage(Long usage) {
-        this.usage = usage;
+        this._usage = usage;
     }
 
     public Set<Contact> getContacts() {

@@ -19,7 +19,7 @@ public class Email implements Serializable {
     private EmailType emailType;
 
     @Column(nullable = false)
-    @Size(min = 2, max = 40)
+    @Size(min = 2, max = 60)
     private String address;
 
 

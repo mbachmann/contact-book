@@ -1,6 +1,7 @@
 package com.example.contactbook.service;
 
 import com.example.contactbook.model.Contact;
+import com.example.contactbook.model.dto.ContactFirstLastNameDTO;
 import com.example.contactbook.model.projection.ContactView;
 import com.example.contactbook.model.projection.ContactViewList;
 import com.example.contactbook.repository.ContactRepository;
@@ -44,6 +45,10 @@ public class ContactService  {
         return contactRepository.saveAll(contacts);
     }
 
+    public List<ContactFirstLastNameDTO> findAllContactFirstLastNameView() {
+        return contactRepository.findAllContactFirstLastNameView();
+    }
+
 
     public Optional<Contact> findContactByIdWithEagerRelationships(Long id) {
         return contactRepository.findByIdWithEagerRelationships(id);
@@ -78,6 +83,13 @@ public class ContactService  {
         return false;
     }
 
+    public String deleteAll() {
+        long count = contactRepository.count();
+        contactRepository.deleteAll();
+        return (count + " contacts deleted");
+    }
+
+
     public List<Contact> findAll() {
         return contactRepository.findAll(Sort.by(Sort.Direction.ASC, "lastName", "firstName"));
     }
@@ -103,8 +115,6 @@ public class ContactService  {
             int totalSize = contacts.size();
             return createPage(contacts, pageable, totalSize);
         }
-
-
     }
 
     public List<ContactView> findAllContactViews() {
@@ -169,7 +179,7 @@ public class ContactService  {
     }
 
 
-    public Contact findByFirstNameAndLastName(String firstName, String lastName) {
+    public List<Contact> findByFirstNameAndLastName(String firstName, String lastName) {
         return contactRepository.findByFirstNameAndLastName(firstName, lastName);
     }
 

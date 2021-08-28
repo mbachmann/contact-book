@@ -54,9 +54,9 @@ public class CodeService {
         List<Code> codes;
 
         switch (codeType) {
-            case AddressType:   codes = codeRepository.findAllAddressType();    break;
-            case EmailType:     codes = codeRepository.findAllEmailType();      break;
-            case PhoneType:     codes = codeRepository.findAllPhoneType();      break;
+            case AddressType:   codes = codeRepository.findAllAddressTypes();    break;
+            case EmailType:     codes = codeRepository.findAllEmailTypes();      break;
+            case PhoneType:     codes = codeRepository.findAllPhoneTypes();      break;
             case AllCodes:      codes = findAllCodesWithUsage();                break;
             default:            codes = codeRepository.findAllByType(codeType.getValue());
         }
@@ -67,9 +67,9 @@ public class CodeService {
     public List<Code> findAllCodesWithUsage() {
 
         List<Code> codes = new ArrayList<>();
-        codes.addAll(codeRepository.findAllAddressType()) ;
-        codes.addAll(codeRepository.findAllEmailType());
-        codes.addAll(codeRepository.findAllPhoneType());
+        codes.addAll(codeRepository.findAllAddressTypes()) ;
+        codes.addAll(codeRepository.findAllEmailTypes());
+        codes.addAll(codeRepository.findAllPhoneTypes());
         return codes;
     }
 
@@ -89,9 +89,9 @@ public class CodeService {
         Page<Code> page;
 
         switch (codeType) {
-            case AddressType: page = codeRepository.findAllAddressType(pageable);   break;
-            case EmailType:   page = codeRepository.findAllEmailType(pageable);     break;
-            case PhoneType:   page = codeRepository.findAllPhoneType(pageable);     break;
+            case AddressType: page = codeRepository.findAllAddressTypes(pageable);   break;
+            case EmailType:   page = codeRepository.findAllEmailTypes(pageable);     break;
+            case PhoneType:   page = codeRepository.findAllPhoneTypes(pageable);     break;
             case AllCodes:    page = findAllCodesWithUsage(pageable);               break;
             default:          page = codeRepository.findAllByType(codeType.getValue(), pageable);
         }

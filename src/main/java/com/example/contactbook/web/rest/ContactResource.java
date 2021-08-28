@@ -1,5 +1,7 @@
 package com.example.contactbook.web.rest;
 
+import com.example.contactbook.datainit.DatabaseBootstrap;
+import com.example.contactbook.datainit.DummyDataService;
 import com.example.contactbook.model.Contact;
 import com.example.contactbook.model.projection.ContactViewList;
 import com.example.contactbook.service.ContactService;
@@ -15,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.hibernate.dialect.Database;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +31,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -42,10 +48,18 @@ public class ContactResource implements HasLogger {
 
     @Autowired
     private ContactService contactService;
+
+    @Autowired
+    private DatabaseBootstrap databaseBootstrap;
+
+
     private static final String ENTITY_NAME = "contact";
 
     @Value("${spring.application.name}")
     private String applicationName;
+
+    @Value("${contactapp.data-password}")
+    private String dataPassword;
 
     @PageableAsQueryParam
     @GetMapping("/contacts/list")
@@ -171,6 +185,37 @@ public class ContactResource implements HasLogger {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
         return ResponseEntity.ok(contactService.deleteContactById(id));
+    }
+
+    /**
+     * {@code DELETE  /contact} : delete all contacts
+     *
+     * @return the {@link ResponseEntity} with status {@code 200}.
+     */
+    @Operation(summary = "Delete all contacts")
+    @DeleteMapping("/contacts")
+    protected ResponseEntity<String> deleteAll(@Parameter(description = "delete all contacts password") @RequestParam(required = true, defaultValue = "password") String password) {
+        if (!password.equals(dataPassword)) {
+            throw new BadRequestAlertException("password not correct", ENTITY_NAME, "wrongpassword");
+        }
+        return ResponseEntity.ok(contactService.deleteAll());
+    }
+
+    /**
+     * {@code DELETE  /contact} : batch create random contacts
+     *
+     * @return the {@link ResponseEntity} with status {@code 200}.
+     */
+    @Operation(summary = "Batch create random contacts")
+    @PatchMapping("/contacts/create")
+    protected ResponseEntity<String> createContacts(
+            @Parameter(description = "amount of contacts to create (1 ... 10000)") @Min(1) @Max(10000) @RequestParam(required = true, defaultValue = "1") Integer amount,
+            @Parameter(description = "create contacts password") @RequestParam(required = true, defaultValue = "password") String password
+    ) throws IOException, URISyntaxException {
+        if (!password.equals(dataPassword)) {
+            throw new BadRequestAlertException("password not correct", ENTITY_NAME, "wrongpassword");
+        }
+        return ResponseEntity.ok(databaseBootstrap.createContacts(amount));
     }
 
 }

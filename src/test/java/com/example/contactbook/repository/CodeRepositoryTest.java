@@ -2,7 +2,6 @@ package com.example.contactbook.repository;
 
 import com.example.contactbook.AbstractTest;
 import com.example.contactbook.model.codes.Code;
-import com.example.contactbook.model.codes.EmailType;
 import com.example.contactbook.model.enums.CodeType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,7 +66,7 @@ public class CodeRepositoryTest extends AbstractTest {
 
         Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC, "shortCut"));
         // Page<Code> codesPaged = codeRepository.findAllByType(CodeType.EmailType.getValue(), pageable);
-        Page<Code> codesPaged = codeRepository.findAllEmailType(pageable);
+        Page<Code> codesPaged = codeRepository.findAllEmailTypes(pageable);
 
         if (codesPaged.getTotalElements() > 0) {
             long emailTypeId = codesPaged.getContent().get(0).getId();
@@ -83,7 +82,7 @@ public class CodeRepositoryTest extends AbstractTest {
 
         Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC, "shortCut"));
         // Page<Code> codesPaged = codeRepository.findAllByType(CodeType.AddressType.getValue(), pageable);
-        Page<Code> codesPaged = codeRepository.findAllAddressType(pageable);
+        Page<Code> codesPaged = codeRepository.findAllAddressTypes(pageable);
 
         if (codesPaged.getTotalElements() > 0) {
             long addressTypeId = codesPaged.getContent().get(0).getId();
@@ -99,7 +98,7 @@ public class CodeRepositoryTest extends AbstractTest {
 
         Pageable pageable = PageRequest.of(0, 5, Sort.by(Sort.Direction.ASC, "shortCut"));
         // Page<Code> codesPaged = codeRepository.findAllByType(CodeType.PhoneType.getValue(), pageable);
-        Page<Code> codesPaged = codeRepository.findAllPhoneType(pageable);
+        Page<Code> codesPaged = codeRepository.findAllPhoneTypes(pageable);
 
         if (codesPaged.getTotalElements() > 0) {
             long phoneTypeId = codesPaged.getContent().get(0).getId();

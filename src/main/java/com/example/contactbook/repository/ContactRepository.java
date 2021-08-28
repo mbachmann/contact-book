@@ -1,6 +1,7 @@
 package com.example.contactbook.repository;
 
 import com.example.contactbook.model.Contact;
+import com.example.contactbook.model.dto.ContactFirstLastNameDTO;
 import com.example.contactbook.model.projection.ContactView;
 import com.example.contactbook.model.projection.ContactViewList;
 import com.querydsl.core.types.Predicate;
@@ -35,7 +36,8 @@ public interface ContactRepository extends JpaRepository<Contact, Long>, Queryds
             "c.relationsIdAggregate AS relationsIdAggregate " +
             "FROM Contact c " +
             "WHERE (:filter is null " +
-            "OR (CONCAT(COALESCE(c.firstName,''), ' ', COALESCE(c.lastName,''), ' ', COALESCE(c.company,'') , ' ', COALESCE(c.addressesAggregate,'') , ' ', COALESCE(c.phonesAggregate,'') , ' ', COALESCE(c.emailsAggregate,''), COALESCE(c.birthDate,'')) LIKE %:filter%) ) " +
+            "OR (CONCAT(COALESCE(c.firstName,''), ' ', COALESCE(c.lastName,''), ' ', COALESCE(c.company,'') , ' ', COALESCE(c.addressesAggregate,'') , ' ', COALESCE(c.phonesAggregate,'') , ' ', COALESCE(c.emailsAggregate,'')) LIKE %:filter%) " +
+            "OR (c.birthDate is not null AND CONCAT(COALESCE(c.birthDate,'2000-01-01'), ' ') LIKE %:filter%)  )" +
             "AND (EXISTS (SELECT 1 FROM c.groups g WHERE COALESCE(g.name,'') IN (:groups) ) " +
             "OR '*' IN (:groups) OR (SIZE(c.groups) = 0 AND '-' IN (:groups))) " +
             "AND (EXISTS (SELECT 1 FROM c.relations g WHERE COALESCE(g.contactRelationValue,'') IN (:relations) ) " +
@@ -58,7 +60,9 @@ public interface ContactRepository extends JpaRepository<Contact, Long>, Queryds
             "c.groupsIdAggregate AS groupsIdAggregate, " +
             "c.relationsIdAggregate AS relationsIdAggregate " +
             "FROM Contact c " +
-            "WHERE (:filter is null OR (CONCAT(COALESCE(c.firstName,''), ' ', COALESCE(c.lastName,''), ' ', COALESCE(c.company,'') , ' ', COALESCE(c.addressesAggregate,'') , ' ', COALESCE(c.phonesAggregate,'') , ' ', COALESCE(c.emailsAggregate,''), COALESCE(c.birthDate,'')) LIKE %:filter%) ) " +
+            "WHERE (:filter is null " +
+            "OR (CONCAT(COALESCE(c.firstName,''), ' ', COALESCE(c.lastName,''), ' ', COALESCE(c.company,'') , ' ', COALESCE(c.addressesAggregate,'') , ' ', COALESCE(c.phonesAggregate,'') , ' ', COALESCE(c.emailsAggregate,'')) LIKE %:filter%) " +
+            "OR (c.birthDate is not null AND CONCAT(COALESCE(c.birthDate,'2000-01-01'), ' ') LIKE %:filter%)  )" +
             "AND (EXISTS (SELECT 1 FROM c.groups g WHERE COALESCE(g.name,'') IN (:groups) ) " +
             "OR '*' IN (:groups) OR (SIZE(c.groups) = 0 AND '-' IN (:groups)))" +
             "AND (EXISTS (SELECT 1 FROM c.relations g WHERE COALESCE(g.contactRelationValue,'') IN (:relations) ) " +
@@ -72,7 +76,7 @@ public interface ContactRepository extends JpaRepository<Contact, Long>, Queryds
     @Query("select c from Contact c")
     Page<ContactView> findAllContactViews(Pageable page);
 
-    Contact findByFirstNameAndLastName(String firstName, String lastName);
+    List<Contact>  findByFirstNameAndLastName(String firstName, String lastName);
 
     @Query("select distinct c, CONCAT(c.lastName, ', ', c.firstName) AS name  from Contact c left join fetch c.addresses left join fetch c.emails left join fetch c.phones left join fetch c.groups left join fetch c.relations")
     List<Contact> findAllWithEagerRelationships(Sort sort);
@@ -144,5 +148,8 @@ public interface ContactRepository extends JpaRepository<Contact, Long>, Queryds
     @EntityGraph(value = "contact-entity-graph")
     @NonNull
     Page<Contact> findAll(@NonNull Predicate predicate, @NonNull Pageable pageable);
+
+    @Query("SELECT distinct new com.example.contactbook.model.dto.ContactFirstLastNameDTO(c.firstName, c.lastName) FROM Contact c ")
+    List<ContactFirstLastNameDTO> findAllContactFirstLastNameView();
 
 }

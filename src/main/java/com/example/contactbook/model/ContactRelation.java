@@ -22,7 +22,7 @@ public class ContactRelation implements Serializable {
     public ContactRelation (Long id, ContactRelationType contactRelationType, Long usage) {
         this.id = id;
         this.setContactRelationType(contactRelationType);
-        this.usage = usage;
+        this._usage = usage;
     }
 
     @Id
@@ -44,7 +44,7 @@ public class ContactRelation implements Serializable {
     /**
      * how many contacts are assigned to this relation ,
      */
-    private Long usage;
+    private Long _usage;
 
 
     @ManyToMany(mappedBy = "relations")
@@ -116,11 +116,11 @@ public class ContactRelation implements Serializable {
     }
 
     public Long getUsage() {
-        return usage;
+        return _usage;
     }
 
     public void setUsage(Long usage) {
-        this.usage = usage;
+        this._usage = usage;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
